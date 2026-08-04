@@ -1,5 +1,5 @@
-<title>Boule de neige — simulateur d'intérêts composés</title>
-<meta name="description" content="Visualisez année par année ce que produisent vos versements mensuels : intérêts annuels, capital + intérêts, et intérêts composés cumulés.">
+<title>Boule de neige</title>
+<meta name="description" content="Simulez année par année les intérêts annuels, le capital atteint et les intérêts composés cumulés de votre épargne mensuelle, frais, inflation et fiscalité compris.">
 <style>
 /* ------------------------------------------------------------------
    Boule de neige — feuille de style
@@ -543,18 +543,320 @@ footer code {
   thead th, tbody td { padding-left: 10px; padding-right: 10px; }
 }
 
+/* ---------- barre de navigation ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 32px);
+  padding: 0 var(--pad);
+  height: 58px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand-mark { color: var(--int); font-size: 16px; }
+
+.nav {
+  display: flex;
+  gap: clamp(10px, 2vw, 22px);
+  margin-right: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nav a {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.nav a:hover { color: var(--ink); }
+.nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--int); }
+
+a:focus-visible, button:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- en-tête de page ---------- */
+
+.page-head { border-bottom: 1px solid var(--rule); padding-bottom: 18px; }
+
+.page-head h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  margin: 6px 0 0;
+  text-wrap: balance;
+  max-width: 20ch;
+}
+
+.lede {
+  margin: 10px 0 0;
+  color: var(--muted);
+  max-width: 62ch;
+  font-size: 15.5px;
+}
+
+/* ---------- accueil ---------- */
+
+.hero { padding: clamp(24px, 6vw, 64px) 0 clamp(8px, 2vw, 20px); }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 7.5vw, 68px);
+  font-weight: 700;
+  letter-spacing: -0.042em;
+  line-height: 0.98;
+  margin: 12px 0 0;
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+.hero .lede { font-size: clamp(16px, 2vw, 19px); margin-top: 18px; }
+
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: var(--r);
+  border: 1px solid var(--rule-strong);
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.btn-primary { background: var(--pay); border-color: var(--pay); color: #fff; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn:hover { border-color: var(--ink-2); }
+
+.figure-note {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.card {
+  background: var(--surface);
+  padding: 22px var(--pad);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* ---------- pages de texte ---------- */
+
+.prose { max-width: 68ch; }
+
+.prose h2 {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 44px 0 0;
+  text-wrap: balance;
+}
+
+.prose h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 28px 0 0;
+}
+
+.prose p, .prose li { color: var(--ink-2); }
+.prose p { margin: 12px 0 0; }
+.prose ul, .prose ol { margin: 12px 0 0; padding-left: 20px; }
+.prose li { margin: 6px 0 0; }
+.prose strong { color: var(--ink); }
+
+.prose a { color: var(--accent); text-underline-offset: 2px; }
+
+.formula {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--int);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin: 16px 0 0;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+}
+
+.pull {
+  margin: 20px 0 0;
+  padding: 16px 18px;
+  background: var(--int-ghost);
+  border-radius: var(--r);
+  color: var(--ink-2);
+  font-size: 14.5px;
+}
+
+.dl { margin: 16px 0 0; display: grid; gap: 0; }
+.dl > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 26%) 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+}
+.dl dt {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.dl dd { margin: 0; color: var(--muted); font-size: 14px; }
+
+@media (max-width: 520px) {
+  .dl > div { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* ---------- ajouts au simulateur ---------- */
+
+.field-mode { margin-bottom: 20px; max-width: 420px; }
+
+.panel-body-alt { background: var(--surface-2); border-top: 1px solid var(--rule); }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.input-shell select {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  padding: 12px 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.input-shell.is-computed {
+  background: var(--pay-ghost);
+  border-style: dashed;
+}
+.input-shell.is-computed input { color: var(--pay); }
+
+.solved {
+  margin: 20px 0 0;
+  padding: 14px 16px;
+  background: var(--pay-ghost);
+  border-radius: var(--r);
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.solved strong { color: var(--ink); font-weight: 600; }
+
+/* Les boutons gardent leur couleur propre à l'intérieur d'un bloc de texte. */
+.prose a.btn { color: var(--ink); text-decoration: none; }
+.prose a.btn-primary { color: #fff; }
+
+/* `hidden` doit l'emporter sur les display: flex des composants. */
+[hidden] { display: none !important; }
+
+/* Les groupes de boutons passent à la ligne plutôt que de déborder. */
+.segmented { flex-wrap: wrap; }
+.segmented button { flex: 1 1 auto; }
+
+/* Les groupes de trois boutons ont besoin de deux colonnes pour tenir. */
+@media (min-width: 720px) { .field-wide { grid-column: span 2; } }
+
+/* Séparateurs portés par les cellules : une grille incomplète ne laisse plus
+   de case vide colorée en bout de ligne. */
+.tiles, .cards {
+  gap: 0;
+  background: var(--surface);
+}
+.tile, .card {
+  border-left: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  margin: -1px 0 0 -1px;
+}
+
 </style>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  
+  <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
+</header>
 
 <div class="wrap">
 
-  <header class="masthead">
-    <div>
-      <p class="eyebrow">Intérêts composés · Effet boule de neige</p>
-      <h1>Ce que vos versements produisent, année après année</h1>
-      <p>Vous versez la même somme chaque mois. Les intérêts, eux, produisent à leur tour des intérêts&nbsp;: c'est là que la courbe décolle. Chaque ligne du tableau montre les intérêts de l'année, le capital atteint et les intérêts composés cumulés depuis le départ.</p>
-    </div>
-    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Changer de thème">Thème</button>
-  </header>
+  <div class="page-head">
+    <p class="eyebrow">Simulateur</p>
+    <h1>Ce que vos versements produisent, année après année</h1>
+    <p class="lede">Vous versez la même somme chaque mois. Les intérêts, eux, produisent à leur tour des intérêts&nbsp;: c'est là que la courbe décolle.</p>
+  </div>
 
   <section class="panel" aria-labelledby="paramsTitle">
     <div class="panel-head">
@@ -564,7 +866,16 @@ footer code {
       </div>
       <p class="hint" id="rateHint"></p>
     </div>
+
     <div class="panel-body">
+      <div class="field field-mode">
+        <label id="goalLabel">Point de départ</label>
+        <div class="segmented" role="group" aria-labelledby="goalLabel" id="goalGroup">
+          <button type="button" data-goal="contribution" aria-pressed="true">Je verse tant par mois</button>
+          <button type="button" data-goal="target" aria-pressed="false">Je vise un capital</button>
+        </div>
+      </div>
+
       <div class="controls">
         <div class="field">
           <label for="initial">Capital initial</label>
@@ -573,6 +884,15 @@ footer code {
             <span class="unit">€</span>
           </div>
           <span class="hint">Ce que vous placez au départ</span>
+        </div>
+
+        <div class="field" id="targetField" hidden>
+          <label for="target">Objectif à atteindre</label>
+          <div class="input-shell">
+            <input type="number" id="target" min="0" step="10000" value="200000" inputmode="decimal">
+            <span class="unit">€</span>
+          </div>
+          <span class="hint">Capital visé en fin de période</span>
         </div>
 
         <div class="field">
@@ -584,17 +904,17 @@ footer code {
           <span class="hint" id="monthlyHint"></span>
         </div>
 
-        <div class="field">
+        <div class="field" id="yearlyField">
           <label for="yearly">Épargne annuelle</label>
           <div class="input-shell">
             <input type="number" id="yearly" min="0" step="120" value="1200" inputmode="decimal">
             <span class="unit">€ / an</span>
           </div>
-          <span class="hint">Équivaut à l'épargne mensuelle × 12</span>
+          <span class="hint">Épargne mensuelle × 12</span>
         </div>
 
         <div class="field">
-          <label for="rate">Taux d'intérêt annuel</label>
+          <label for="rate">Rendement annuel brut</label>
           <div class="input-shell">
             <input type="number" id="rate" min="0" max="100" step="0.1" value="8" inputmode="decimal">
             <span class="unit">%</span>
@@ -610,8 +930,41 @@ footer code {
           </div>
           <span class="hint">De 1 à 70 ans</span>
         </div>
+      </div>
+
+      <p class="solved" id="solved" hidden></p>
+    </div>
+
+    <div class="panel-body panel-body-alt">
+      <p class="section-label">Hypothèses</p>
+      <div class="controls">
+        <div class="field">
+          <label for="fees">Frais de gestion</label>
+          <div class="input-shell">
+            <input type="number" id="fees" min="0" max="10" step="0.05" value="0" inputmode="decimal">
+            <span class="unit">% / an</span>
+          </div>
+          <span class="hint" id="feesHint"></span>
+        </div>
 
         <div class="field">
+          <label for="inflation">Inflation</label>
+          <div class="input-shell">
+            <input type="number" id="inflation" min="0" max="20" step="0.1" value="2" inputmode="decimal">
+            <span class="unit">% / an</span>
+          </div>
+          <span class="hint">Pour le pouvoir d'achat</span>
+        </div>
+
+        <div class="field">
+          <label for="envelope">Enveloppe fiscale</label>
+          <div class="input-shell">
+            <select id="envelope"></select>
+          </div>
+          <span class="hint" id="envelopeHint"></span>
+        </div>
+
+        <div class="field field-wide">
           <label id="modeLabel">Capitalisation</label>
           <div class="segmented" role="group" aria-labelledby="modeLabel" id="modeGroup">
             <button type="button" data-mode="monthly" aria-pressed="true">Mensuelle</button>
@@ -619,6 +972,15 @@ footer code {
             <button type="button" data-mode="compare" aria-pressed="false">Comparer</button>
           </div>
           <span class="hint" id="modeHint"></span>
+        </div>
+
+        <div class="field field-wide">
+          <label id="unitsLabel">Montants affichés</label>
+          <div class="segmented" role="group" aria-labelledby="unitsLabel" id="unitsGroup">
+            <button type="button" data-units="nominal" aria-pressed="true">Euros courants</button>
+            <button type="button" data-units="real" aria-pressed="false">Euros d'aujourd'hui</button>
+          </div>
+          <span class="hint" id="unitsHint"></span>
         </div>
       </div>
     </div>
@@ -630,7 +992,7 @@ footer code {
     <div class="panel-head">
       <div>
         <h2 id="snowTitle">La boule de neige</h2>
-        <p class="note">En bas, l'argent que vous avez sorti de votre poche. Au-dessus, les intérêts composés cumulés — la part que vous n'avez pas versée.</p>
+        <p class="note">En bas, l'argent sorti de votre poche. Au-dessus, les intérêts composés cumulés — la part que vous n'avez pas versée.</p>
       </div>
       <div class="legend">
         <span><i class="swatch pay"></i>Versements cumulés</span>
@@ -679,84 +1041,129 @@ footer code {
   </section>
 
   <footer>
-    <p><strong>Comment c'est calculé.</strong> En capitalisation <em>annuelle</em>, les intérêts d'une année portent sur le capital de début d'année&nbsp;: <code>intérêts = capital × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. En capitalisation <em>mensuelle</em>, chaque mois&nbsp;: <code>solde = solde × (1 + taux / 12) + versement</code> — les intérêts du mois entrent immédiatement dans le calcul du mois suivant. Les intérêts composés cumulés d'une année sont l'écart entre le capital atteint et tout ce que vous avez versé depuis le départ.</p>
-    <p>Simulation à taux constant, hors fiscalité, hors frais et hors inflation. Ce n'est pas un conseil en investissement&nbsp;: les rendements réels varient d'une année à l'autre.</p>
+    <p><strong>Comment c'est calculé.</strong> Capitalisation <em>annuelle</em>&nbsp;: <code>intérêts = capital début × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. Capitalisation <em>mensuelle</em>&nbsp;: <code>solde = solde × (1 + taux / 12) + versement</code>, douze fois par an. Les frais de gestion sont prélevés sur l'encours et ramènent le taux brut à un taux net. L'impôt est calculé à la sortie, sur les gains. <a href="comprendre.html">Le détail des formules</a>.</p>
+    <p>Simulation à taux constant. Les rendements réels varient d'une année à l'autre, la fiscalité est simplifiée&nbsp;: ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat et ne constituent pas un conseil en investissement.</p>
   </footer>
 
 </div>
 
 <script>
-/* Moteur de calcul — intérêts composés et effet boule de neige.
-   Reproduit la logique du tableur : capitalisation annuelle (intérêts calculés
-   sur le capital de début d'année) et capitalisation mensuelle (intérêts
-   calculés chaque mois sur le solde, versement en fin de mois). */
+/* Éléments communs à toutes les pages : thème clair/sombre et lien actif. */
 
 (function (global) {
   'use strict';
 
+  const KEY = 'boule-de-neige.theme';
+  const root = document.documentElement;
+  const listeners = [];
+
+  try {
+    const saved = localStorage.getItem(KEY);
+    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  } catch (e) { /* stockage indisponible */ }
+
+  function current() {
+    const set = root.getAttribute('data-theme');
+    if (set === 'dark' || set === 'light') return set;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function wire() {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+      const sync = () => { btn.textContent = current() === 'dark' ? 'Thème clair' : 'Thème sombre'; };
+      btn.addEventListener('click', () => {
+        const next = current() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem(KEY, next); } catch (e) { /* stockage indisponible */ }
+        sync();
+        listeners.forEach((f) => f(next));
+      });
+      sync();
+    }
+
+    const here = location.pathname.split('/').pop() || 'index.html';
+    for (const a of document.querySelectorAll('.nav a')) {
+      if ((a.getAttribute('href') || '').split('/').pop() === here) a.setAttribute('aria-current', 'page');
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else wire();
+
+  global.Site = { theme: current, onThemeChange: (f) => listeners.push(f) };
+})(window);
+
+</script>
+<script>
+/* Moteur de calcul — intérêts composés, effet boule de neige.
+
+   Capitalisation annuelle : les intérêts d'une année portent sur le capital
+   présent en début d'année.
+   Capitalisation mensuelle : chaque mois, les intérêts s'ajoutent au solde et
+   produisent à leur tour dès le mois suivant.
+
+   Les frais de gestion sont prélevés sur l'encours : un taux brut r et des
+   frais f donnent un taux net r − f appliqué à chaque période.
+   L'inflation ne change pas les montants, elle sert à les convertir en euros
+   d'aujourd'hui (déflateur (1 + i)^n).
+   L'impôt est calculé à la sortie, sur les gains, selon l'enveloppe. */
+
+(function (global) {
+  'use strict';
+
+  /** Enveloppes fiscales — taux appliqué aux gains à la sortie. */
+  const ENVELOPES = {
+    exonere: { label: 'Livret A / LEP — exonéré', rate: 0, allowance: 0 },
+    pea: { label: 'PEA après 5 ans', rate: 0.172, allowance: 0 },
+    av: { label: 'Assurance-vie après 8 ans', rate: 0.247, allowance: 4600 },
+    cto: { label: 'Compte-titres — flat tax', rate: 0.30, allowance: 0 },
+  };
+
   /**
    * @param {object} p
-   * @param {number} p.initial     capital initial (€)
-   * @param {number} p.monthly     épargne mensuelle (€)
-   * @param {number} p.rate        taux d'intérêt annuel (ex. 0.08)
-   * @param {number} p.years       durée en années
-   * @returns {{annual: Row[], monthlyC: Row[], meta: object}}
+   * @param {number} p.initial    capital initial (€)
+   * @param {number} p.monthly    épargne mensuelle (€)
+   * @param {number} p.rate       rendement annuel brut (ex. 0.08)
+   * @param {number} [p.fees]     frais de gestion annuels (ex. 0.005)
+   * @param {number} [p.inflation] inflation annuelle (ex. 0.02)
+   * @param {number} p.years      durée en années
    */
   function project(p) {
     const initial = Math.max(0, p.initial || 0);
     const monthly = Math.max(0, p.monthly || 0);
-    const rate = p.rate || 0;
+    const gross = p.rate || 0;
+    const fees = Math.max(0, p.fees || 0);
+    const inflation = p.inflation || 0;
+    const rate = gross - fees; // taux net de frais
     const years = Math.max(1, Math.round(p.years || 1));
     const yearly = monthly * 12;
     const rMonth = rate / 12;
 
     const annual = [];
     const monthlyC = [];
-
-    let openA = initial; // capital de début d'année, modèle annuel
-    let openM = initial; // solde de début d'année, modèle mensuel
+    let openA = initial;
+    let openM = initial;
 
     for (let y = 1; y <= years; y++) {
-      const paidIn = initial + yearly * y; // total versé, capital initial inclus
+      const paidIn = initial + yearly * y;
+      const deflator = Math.pow(1 + inflation, -y);
 
-      // --- Capitalisation annuelle -------------------------------------
       const interestA = openA * rate;
       const closeA = openA + yearly + interestA;
-
       annual.push({
-        year: y,
-        open: openA,
-        contribution: yearly,
-        base: openA + yearly, // « Capital + Épargne »
-        interest: interestA,
-        close: closeA,
-        savedCumul: yearly * y,
-        paidIn: paidIn,
-        interestCumul: closeA - paidIn,
+        year: y, open: openA, contribution: yearly, base: openA + yearly,
+        interest: interestA, close: closeA, savedCumul: yearly * y, paidIn: paidIn,
+        interestCumul: closeA - paidIn, deflator: deflator,
       });
 
-      // --- Capitalisation mensuelle ------------------------------------
       let bal = openM;
-      const months = [];
-      for (let m = 1; m <= 12; m++) {
-        const int = bal * rMonth;
-        bal = bal + int + monthly;
-        months.push({ month: m, interest: int, balance: bal });
-      }
+      for (let m = 0; m < 12; m++) bal = bal + bal * rMonth + monthly;
       const closeM = bal;
-      const interestM = closeM - openM - yearly;
-
       monthlyC.push({
-        year: y,
-        open: openM,
-        contribution: yearly,
-        base: openM + yearly,
-        interest: interestM,
-        close: closeM,
-        savedCumul: yearly * y,
-        paidIn: paidIn,
-        interestCumul: closeM - paidIn,
-        months: months,
+        year: y, open: openM, contribution: yearly, base: openM + yearly,
+        interest: closeM - openM - yearly, close: closeM, savedCumul: yearly * y,
+        paidIn: paidIn, interestCumul: closeM - paidIn, deflator: deflator,
       });
 
       openA = closeA;
@@ -766,64 +1173,95 @@ footer code {
     return {
       annual: annual,
       monthlyC: monthlyC,
-      meta: { initial, monthly, yearly, rate, rMonth, years },
+      meta: { initial, monthly, yearly, gross, fees, rate, rMonth, inflation, years },
     };
   }
 
-  /** Indicateurs de l'effet boule de neige pour une série de lignes. */
-  function summarize(rows, meta) {
-    const last = rows[rows.length - 1];
-    const paidIn = last.paidIn;
-    const interest = last.close - paidIn;
+  /** Impôt dû sur les gains à la sortie. */
+  function tax(gains, envelopeKey) {
+    const e = ENVELOPES[envelopeKey] || ENVELOPES.exonere;
+    return Math.max(0, gains - e.allowance) * e.rate;
+  }
 
-    // Année de bascule : les intérêts de l'année dépassent les versements.
+  /** Indicateurs de l'effet boule de neige. */
+  function summarize(rows, meta, envelopeKey) {
+    const last = rows[rows.length - 1];
+    const interest = last.close - last.paidIn;
+    const due = tax(interest, envelopeKey);
+
     let tipping = null;
     for (const r of rows) {
       if (r.contribution > 0 && r.interest > r.contribution) { tipping = r.year; break; }
     }
-    // Année où les intérêts cumulés dépassent le total versé.
     let crossover = null;
     for (const r of rows) {
       if (r.interestCumul > r.paidIn) { crossover = r.year; break; }
     }
-    // Intérêts de la dernière année vs. de la première : accélération.
-    const firstInterest = rows[0].interest;
-    const lastInterest = last.interest;
 
     return {
       finalCapital: last.close,
-      paidIn: paidIn,
+      paidIn: last.paidIn,
       interest: interest,
       interestShare: last.close > 0 ? interest / last.close : 0,
-      multiple: paidIn > 0 ? last.close / paidIn : 0,
+      multiple: last.paidIn > 0 ? last.close / last.paidIn : 0,
+      tax: due,
+      netCapital: last.close - due,
+      realCapital: last.close * last.deflator,
+      realNetCapital: (last.close - due) * last.deflator,
       tippingYear: tipping,
       crossoverYear: crossover,
-      firstInterest: firstInterest,
-      lastInterest: lastInterest,
-      acceleration: firstInterest > 0 ? lastInterest / firstInterest : 0,
+      firstInterest: rows[0].interest,
+      lastInterest: last.interest,
+      acceleration: rows[0].interest > 0 ? last.interest / rows[0].interest : 0,
       monthlyIncomeAtEnd: (last.close * meta.rate) / 12,
     };
   }
 
-  const api = { project, summarize };
+  /**
+   * Objectif inversé : épargne mensuelle nécessaire pour atteindre `target`.
+   * Renvoie 0 si le capital initial suffit déjà.
+   */
+  function solveMonthly(p) {
+    const initial = Math.max(0, p.initial || 0);
+    const target = Math.max(0, p.target || 0);
+    const rate = (p.rate || 0) - Math.max(0, p.fees || 0);
+    const years = Math.max(1, Math.round(p.years || 1));
+    const compounding = p.compounding === 'annual' ? 'annual' : 'monthly';
+
+    if (compounding === 'annual') {
+      const g = Math.pow(1 + rate, years);
+      const factor = rate === 0 ? years : (g - 1) / rate; // valeur future de 1 €/an
+      const need = target - initial * g;
+      return Math.max(0, need / factor / 12);
+    }
+    const m = rate / 12;
+    const n = years * 12;
+    const g = Math.pow(1 + m, n);
+    const factor = m === 0 ? n : (g - 1) / m; // valeur future de 1 €/mois
+    const need = target - initial * g;
+    return Math.max(0, need / factor);
+  }
+
+  const api = { project, summarize, solveMonthly, tax, ENVELOPES };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   global.Compound = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 <script>
-/* Interface — simulateur d'intérêts composés « boule de neige ». */
+/* Simulateur — interface, graphiques SVG, tableau. */
 
 (function () {
   'use strict';
 
   const NS = 'http://www.w3.org/2000/svg';
-  const STORE = 'boule-de-neige.v1';
+  const STORE = 'boule-de-neige.v2';
 
   const eur0 = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
   const eur2 = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const pct1 = new Intl.NumberFormat('fr-FR', { style: 'percent', maximumFractionDigits: 1 });
   const num1 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
+  const pctText = (v) => (v * 100).toFixed(2).replace('.', ',') + ' %';
 
   function compact(v) {
     const a = Math.abs(v);
@@ -835,17 +1273,18 @@ footer code {
   const $ = (id) => document.getElementById(id);
 
   const inputs = {
-    initial: $('initial'),
-    monthly: $('monthly'),
-    yearly: $('yearly'),
-    rate: $('rate'),
-    years: $('years'),
+    initial: $('initial'), target: $('target'), monthly: $('monthly'), yearly: $('yearly'),
+    rate: $('rate'), years: $('years'), fees: $('fees'), inflation: $('inflation'),
   };
 
-  let mode = 'monthly';
+  let mode = 'monthly';      // capitalisation : monthly | annual | compare
+  let goal = 'contribution'; // point de départ : contribution | target
+  let units = 'nominal';     // affichage : nominal | real
+  let envelope = 'exonere';
   let result = null;
+  let solvedMonthly = 0;
 
-  /* ---------- SVG helpers ---------- */
+  /* ---------- SVG ---------- */
 
   function sv(tag, attrs, styles) {
     const n = document.createElementNS(NS, tag);
@@ -854,14 +1293,12 @@ footer code {
     return n;
   }
 
-  /** Échelle lisible : un pas rond, et un maximum multiple de ce pas. */
   function niceScale(v, count) {
     const c = count || 4;
     if (!(v > 0)) return { max: c, step: 1 };
     const raw = v / c;
     const mag = Math.pow(10, Math.floor(Math.log10(raw)));
-    const norm = raw / mag;
-    const step = [1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10].find((s) => s >= norm) * mag;
+    const step = [1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10].find((s) => s >= raw / mag) * mag;
     return { max: step * c, step: step };
   }
 
@@ -878,98 +1315,166 @@ footer code {
     return out;
   }
 
-  /* ---------- lecture / écriture des paramètres ---------- */
+  /* ---------- état ---------- */
+
+  const num = (el, min, max) => Math.min(max, Math.max(min, +el.value || 0));
 
   function readState() {
     return {
-      initial: Math.max(0, +inputs.initial.value || 0),
-      monthly: Math.max(0, +inputs.monthly.value || 0),
-      rate: Math.max(0, +inputs.rate.value || 0) / 100,
-      years: Math.min(70, Math.max(1, Math.round(+inputs.years.value || 1))),
+      initial: num(inputs.initial, 0, 1e12),
+      target: num(inputs.target, 0, 1e12),
+      monthly: num(inputs.monthly, 0, 1e9),
+      rate: num(inputs.rate, 0, 100) / 100,
+      fees: num(inputs.fees, 0, 10) / 100,
+      inflation: num(inputs.inflation, 0, 20) / 100,
+      years: Math.round(num(inputs.years, 1, 70)),
     };
   }
 
   function save(s) {
-    try { localStorage.setItem(STORE, JSON.stringify({ ...s, mode })); } catch (e) { /* stockage indisponible */ }
+    try { localStorage.setItem(STORE, JSON.stringify({ ...s, mode, goal, units, envelope })); } catch (e) { /* stockage indisponible */ }
   }
 
   function restore() {
     let s = null;
     try { s = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { s = null; }
     if (!s) return;
-    if (typeof s.initial === 'number') inputs.initial.value = s.initial;
-    if (typeof s.monthly === 'number') { inputs.monthly.value = s.monthly; inputs.yearly.value = round2(s.monthly * 12); }
-    if (typeof s.rate === 'number') inputs.rate.value = round2(s.rate * 100);
+    const set = (el, v, factor) => { if (typeof v === 'number' && isFinite(v)) el.value = round2(v * (factor || 1)); };
+    set(inputs.initial, s.initial);
+    set(inputs.target, s.target);
+    set(inputs.monthly, s.monthly);
+    if (typeof s.monthly === 'number') inputs.yearly.value = round2(s.monthly * 12);
+    set(inputs.rate, s.rate, 100);
+    set(inputs.fees, s.fees, 100);
+    set(inputs.inflation, s.inflation, 100);
     if (typeof s.years === 'number') inputs.years.value = s.years;
-    if (s.mode) setMode(s.mode, false);
+    if (s.mode) mode = s.mode;
+    if (s.goal) goal = s.goal;
+    if (s.units) units = s.units;
+    if (s.envelope && Compound.ENVELOPES[s.envelope]) envelope = s.envelope;
   }
 
   const round2 = (v) => Math.round(v * 100) / 100;
 
-  function setMode(m, rerender) {
-    mode = m;
-    for (const b of $('modeGroup').querySelectorAll('button')) {
-      b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+  function syncSegmented(groupId, attr, value) {
+    for (const b of $(groupId).querySelectorAll('button')) {
+      b.setAttribute('aria-pressed', String(b.dataset[attr] === value));
     }
-    $('modeHint').textContent = m === 'monthly'
-      ? 'Intérêts calculés chaque mois'
-      : m === 'annual'
-        ? 'Intérêts calculés une fois par an'
+  }
+
+  function syncControls() {
+    syncSegmented('modeGroup', 'mode', mode);
+    syncSegmented('goalGroup', 'goal', goal);
+    syncSegmented('unitsGroup', 'units', units);
+    $('envelope').value = envelope;
+
+    $('modeHint').textContent = mode === 'monthly' ? 'Intérêts calculés chaque mois'
+      : mode === 'annual' ? 'Intérêts calculés une fois par an'
         : 'Les deux méthodes côte à côte';
-    if (rerender !== false) render();
+    $('unitsHint').textContent = units === 'real'
+      ? 'Corrigés de l\'inflation' : 'Sans correction de l\'inflation';
+
+    const solving = goal === 'target';
+    $('targetField').hidden = !solving;
+    $('solved').hidden = !solving;
+    inputs.monthly.readOnly = solving;
+    inputs.yearly.readOnly = solving;
+    inputs.monthly.closest('.input-shell').classList.toggle('is-computed', solving);
+    inputs.yearly.closest('.input-shell').classList.toggle('is-computed', solving);
   }
 
   /* ---------- rendu ---------- */
 
-  function activeRows() {
-    return mode === 'annual' ? result.annual : result.monthlyC;
+  const activeRows = () => (mode === 'annual' ? result.annual : result.monthlyC);
+
+  /** Convertit un montant de l'année `year` selon l'unité d'affichage choisie. */
+  function conv(value, deflator) {
+    return units === 'real' ? value * deflator : value;
   }
 
   function render() {
     const s = readState();
+
+    if (goal === 'target') {
+      solvedMonthly = Compound.solveMonthly({
+        initial: s.initial, target: s.target, rate: s.rate, fees: s.fees,
+        years: s.years, compounding: mode === 'annual' ? 'annual' : 'monthly',
+      });
+      s.monthly = solvedMonthly;
+      inputs.monthly.value = solvedMonthly.toFixed(2);
+      inputs.yearly.value = (solvedMonthly * 12).toFixed(2);
+    }
+
     save(s);
     result = Compound.project(s);
-
     const rows = activeRows();
-    const sum = Compound.summarize(rows, result.meta);
+    const sum = Compound.summarize(rows, result.meta, envelope);
 
-    $('monthlyHint').textContent = 'soit ' + eur0.format(result.meta.yearly) + ' par an';
-    $('rateMonthHint').textContent = 'soit ' + (result.meta.rMonth * 100).toFixed(2).replace('.', ',') + ' % par mois';
-    $('rateHint').textContent = result.meta.years + ' ans · ' + eur0.format(result.meta.monthly) + '/mois · ' + (s.rate * 100).toFixed(2).replace('.', ',') + ' %/an';
+    const m = result.meta;
+    $('monthlyHint').textContent = 'soit ' + eur0.format(m.yearly) + ' par an';
+    $('rateMonthHint').textContent = m.fees > 0
+      ? 'net de frais : ' + pctText(m.rate) + ' par an'
+      : 'soit ' + pctText(m.rMonth) + ' par mois';
+    $('feesHint').textContent = m.fees > 0
+      ? 'rendement net ramené à ' + pctText(m.rate) : 'Prélevés sur l\'encours';
+    $('envelopeHint').textContent = Compound.ENVELOPES[envelope].allowance > 0
+      ? 'après abattement de ' + eur0.format(Compound.ENVELOPES[envelope].allowance)
+      : 'impôt calculé à la sortie';
+    $('rateHint').textContent = m.years + ' ans · ' + eur0.format(m.monthly) + '/mois · ' + pctText(m.rate) + ' net';
 
-    renderTiles(rows, sum);
+    if (goal === 'target') {
+      const s2 = readState();
+      $('solved').innerHTML = solvedMonthly > 0
+        ? `Pour atteindre <strong>${eur0.format(s2.target)}</strong> en ${m.years} ans à ${pctText(m.rate)} net, il faut verser <strong>${eur2.format(solvedMonthly)} par mois</strong> — soit ${eur0.format(solvedMonthly * 12)} par an, ${eur0.format(solvedMonthly * 12 * m.years + m.initial)} au total de votre poche.`
+        : `Votre capital initial suffit&nbsp;: à ${pctText(m.rate)} net il dépasse seul l'objectif en ${m.years} ans. Aucun versement nécessaire.`;
+    }
+
+    renderTiles(sum);
     renderReadout(rows, sum);
     renderArea(rows, sum);
     renderBars(rows, sum);
     renderTable(rows, sum);
   }
 
-  function renderTiles(rows, sum) {
+  function renderTiles(sum) {
+    const m = result.meta;
+    const last = activeRows()[m.years - 1];
+    const real = units === 'real';
+    const suffix = real ? ' (euros d\'aujourd\'hui)' : '';
+    const env = Compound.ENVELOPES[envelope];
+
     const tiles = [
       {
-        k: 'Capital au bout de ' + result.meta.years + ' ans', v: eur0.format(sum.finalCapital),
-        s: 'soit ' + num1.format(sum.multiple) + ' × ce que vous avez versé', hero: true,
+        k: 'Capital au bout de ' + m.years + ' ans' + suffix,
+        v: eur0.format(conv(sum.finalCapital, last.deflator)),
+        s: num1.format(sum.multiple) + ' × ce que vous avez versé', hero: true,
       },
       {
-        k: 'Total versé de votre poche', v: eur0.format(sum.paidIn), cls: 'pay', dot: 'pay',
-        s: eur0.format(result.meta.monthly) + '/mois pendant ' + result.meta.years + ' ans' + (result.meta.initial > 0 ? ' + ' + eur0.format(result.meta.initial) + ' au départ' : ''),
+        k: 'Total versé de votre poche', v: eur0.format(conv(sum.paidIn, last.deflator)),
+        cls: 'pay', dot: 'pay',
+        s: eur0.format(m.monthly) + '/mois pendant ' + m.years + ' ans' + (m.initial > 0 ? ' + ' + eur0.format(m.initial) + ' au départ' : ''),
       },
       {
-        k: 'Intérêts composés gagnés', v: eur0.format(sum.interest), cls: 'int', dot: 'int',
+        k: 'Intérêts composés gagnés', v: eur0.format(conv(sum.interest, last.deflator)),
+        cls: 'int', dot: 'int',
         s: pct1.format(sum.interestShare) + ' du capital final',
       },
       {
-        k: 'Intérêts la dernière année', v: eur0.format(sum.lastInterest),
-        s: sum.firstInterest > 0
-          ? num1.format(sum.acceleration) + ' × les intérêts de la 1ʳᵉ année'
-          : 'contre ' + eur0.format(sum.firstInterest) + ' la 1ʳᵉ année',
+        k: 'Après impôt — ' + env.label,
+        v: eur0.format(conv(sum.netCapital, last.deflator)),
+        s: sum.tax > 0 ? eur0.format(conv(sum.tax, last.deflator)) + ' d\'impôt sur les gains' : 'aucun impôt sur les gains',
+      },
+      {
+        k: real ? 'Soit en euros courants' : 'Pouvoir d\'achat réel',
+        v: eur0.format(real ? sum.netCapital : sum.realNetCapital),
+        s: m.inflation > 0
+          ? (real ? 'valeur affichée sur les relevés' : pctText(m.inflation) + ' d\'inflation par an')
+          : 'inflation à zéro',
       },
       {
         k: 'Année de bascule',
         v: sum.tippingYear ? 'An ' + sum.tippingYear : '—',
-        s: sum.tippingYear
-          ? 'les intérêts rapportent plus que vos versements'
-          : 'pas atteinte sur ' + result.meta.years + ' ans',
+        s: sum.tippingYear ? 'les intérêts rapportent plus que vos versements' : 'pas atteinte sur ' + m.years + ' ans',
       },
     ];
 
@@ -982,22 +1487,22 @@ footer code {
   }
 
   function renderReadout(rows, sum) {
-    const y = result.meta.years;
+    const m = result.meta;
     let txt;
     if (sum.tippingYear) {
       const r = rows[sum.tippingYear - 1];
       txt = `À partir de l'<strong>année ${sum.tippingYear}</strong>, vos placements produisent <span class="mark">${eur0.format(r.interest)}</span> d'intérêts sur l'année, plus que les <span class="mark">${eur0.format(r.contribution)}</span> que vous y versez. `;
     } else {
-      txt = `Sur ${y} ans, les intérêts d'une année n'atteignent pas encore vos versements annuels — allongez la durée ou augmentez le taux pour voir la bascule. `;
+      txt = `Sur ${m.years} ans, les intérêts d'une année n'atteignent pas encore vos versements annuels — allongez la durée ou augmentez le rendement pour voir la bascule. `;
     }
     if (sum.crossoverYear) {
       txt += `À l'<strong>année ${sum.crossoverYear}</strong>, les intérêts cumulés dépassent tout ce que vous avez versé depuis le début. `;
     }
-    txt += `En année ${y}, le capital génère à lui seul <span class="mark">${eur0.format(sum.monthlyIncomeAtEnd)}</span> par mois.`;
+    txt += `En année ${m.years}, le capital génère à lui seul <span class="mark">${eur0.format(sum.monthlyIncomeAtEnd)}</span> par mois.`;
     $('readout').innerHTML = txt;
   }
 
-  /* ---------- graphique en aires empilées ---------- */
+  /* ---------- aires empilées ---------- */
 
   function renderArea(rows, sum) {
     const host = $('areaChart');
@@ -1011,12 +1516,11 @@ footer code {
     const pw = W - pad.l - pad.r;
     const ph = H - pad.t - pad.b;
 
-    // point 0 = aujourd'hui
     const pts = [{ year: 0, paid: result.meta.initial, total: result.meta.initial }].concat(
-      rows.map((r) => ({ year: r.year, paid: r.paidIn, total: r.close }))
+      rows.map((r) => ({ year: r.year, paid: conv(r.paidIn, r.deflator), total: conv(r.close, r.deflator) }))
     );
     const n = pts.length - 1;
-    const max = niceScale(pts[n].total, 4).max;
+    const max = niceScale(Math.max.apply(null, pts.map((p) => p.total)), 4).max;
 
     const x = (i) => pad.l + (n === 0 ? 0 : (i / n) * pw);
     const y = (v) => pad.t + ph - (v / max) * ph;
@@ -1025,7 +1529,6 @@ footer code {
     svg.appendChild(sv('title', {})).textContent =
       `Versements cumulés et intérêts composés cumulés sur ${result.meta.years} ans`;
 
-    // grille + axe des ordonnées
     for (let i = 0; i <= 4; i++) {
       const v = (max / 4) * i;
       const yy = y(v);
@@ -1038,49 +1541,39 @@ footer code {
     const areaTo = (key) => {
       let d = `M${x(0)},${y(0)}`;
       pts.forEach((p, i) => { d += ` L${x(i)},${y(p[key])}`; });
-      d += ` L${x(n)},${y(0)} Z`;
-      return d;
+      return d + ` L${x(n)},${y(0)} Z`;
     };
     const lineTo = (key) => pts.map((p, i) => `${i ? 'L' : 'M'}${x(i)},${y(p[key])}`).join(' ');
 
-    // aire des intérêts (jusqu'au total), puis aire des versements par-dessus
     svg.appendChild(sv('path', { d: areaTo('total') }, { fill: 'var(--int-fill)' }));
     svg.appendChild(sv('path', { d: areaTo('paid') }, { fill: 'var(--pay-fill)' }));
-    // séparation de 2 px : la couleur du fond crée l'espace entre les deux aires
     svg.appendChild(sv('path', { d: lineTo('paid'), fill: 'none', 'stroke-width': 2 }, { stroke: 'var(--surface)' }));
     svg.appendChild(sv('path', { d: lineTo('total'), fill: 'none', 'stroke-width': 2, 'stroke-linejoin': 'round' }, { stroke: 'var(--int)' }));
 
-    // axe des abscisses
     svg.appendChild(sv('line', { x1: pad.l, x2: W - pad.r, y1: y(0), y2: y(0), class: 'axis' }));
     for (const yr of yearTicks(n)) {
       const t = sv('text', { x: x(yr), y: H - pad.b + 16, 'text-anchor': 'middle' });
       t.textContent = yr;
       svg.appendChild(t);
     }
-    const ax = sv('text', { x: pad.l, y: H - pad.b + 16, 'text-anchor': 'middle' });
-    ax.textContent = '0';
-    svg.appendChild(ax);
+    const zero = sv('text', { x: pad.l, y: H - pad.b + 16, 'text-anchor': 'middle' });
+    zero.textContent = '0';
+    svg.appendChild(zero);
 
-    // repère de bascule
     if (sum.tippingYear) {
       const bx = x(sum.tippingYear);
-      svg.appendChild(sv('line', {
-        x1: bx, x2: bx, y1: pad.t - 6, y2: y(0),
-        'stroke-width': 1, 'stroke-dasharray': '3 3',
-      }, { stroke: 'var(--int)' }));
-      const lbl = sv('text', { x: bx + 5, y: pad.t - 10, 'text-anchor': 'start' }, { fill: 'var(--int)' });
+      svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
+      const lbl = sv('text', { x: bx + 5, y: pad.t - 10 }, { fill: 'var(--int)' });
       lbl.textContent = 'bascule · an ' + sum.tippingYear;
       svg.appendChild(lbl);
     }
 
-    // étiquette directe en bout de courbe
     const end = pts[n];
     svg.appendChild(sv('circle', { cx: x(n), cy: y(end.total), r: 4.5, 'stroke-width': 2 }, { fill: 'var(--int)', stroke: 'var(--surface)' }));
     const t1 = sv('text', { x: W - pad.r - 8, y: Math.max(y(end.total) - 14, pad.t + 8), 'text-anchor': 'end', class: 'label-strong' });
     t1.textContent = eur0.format(end.total);
     svg.appendChild(t1);
 
-    // curseur
     const cursor = sv('g', { opacity: 0 });
     const cline = sv('line', { y1: pad.t, y2: y(0), 'stroke-width': 1 }, { stroke: 'var(--rule-strong)' });
     const dotP = sv('circle', { r: 4, 'stroke-width': 2 }, { fill: 'var(--pay)', stroke: 'var(--surface)' });
@@ -1094,19 +1587,16 @@ footer code {
     function move(ev) {
       const box = svg.getBoundingClientRect();
       const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - box.left) * (W / box.width);
-      let i = Math.round(((px - pad.l) / pw) * n);
-      i = Math.max(0, Math.min(n, i));
+      const i = Math.max(0, Math.min(n, Math.round(((px - pad.l) / pw) * n)));
       const p = pts[i];
       cursor.setAttribute('opacity', 1);
       cline.setAttribute('x1', x(i)); cline.setAttribute('x2', x(i));
       dotP.setAttribute('cx', x(i)); dotP.setAttribute('cy', y(p.paid));
       dotT.setAttribute('cx', x(i)); dotT.setAttribute('cy', y(p.total));
-
-      const interest = p.total - p.paid;
       tip.innerHTML = `
         <div class="tt-year">${i === 0 ? 'Au départ' : 'Fin de l\'année ' + p.year}</div>
         <div class="tt-row"><span class="tt-k"><i class="swatch pay"></i>Versé</span><span>${eur0.format(p.paid)}</span></div>
-        <div class="tt-row"><span class="tt-k"><i class="swatch int"></i>Intérêts cumulés</span><span>${eur0.format(interest)}</span></div>
+        <div class="tt-row"><span class="tt-k"><i class="swatch int"></i>Intérêts cumulés</span><span>${eur0.format(p.total - p.paid)}</span></div>
         <div class="tt-row total"><span>Capital</span><span>${eur0.format(p.total)}</span></div>`;
       tip.dataset.show = 'true';
       const scale = host.clientWidth / W;
@@ -1114,8 +1604,7 @@ footer code {
       tip.style.left = Math.max(0, Math.min(host.clientWidth - tw, x(i) * scale - tw / 2)) + 'px';
       tip.style.top = Math.max(0, y(p.total) * scale - tip.offsetHeight - 14) + 'px';
     }
-
-    function leave() { cursor.setAttribute('opacity', 0); tip.dataset.show = 'false'; }
+    const leave = () => { cursor.setAttribute('opacity', 0); tip.dataset.show = 'false'; };
 
     hit.addEventListener('mousemove', move);
     hit.addEventListener('mouseleave', leave);
@@ -1126,7 +1615,7 @@ footer code {
     host.appendChild(svg);
   }
 
-  /* ---------- graphique en barres groupées ---------- */
+  /* ---------- barres groupées ---------- */
 
   function renderBars(rows, sum) {
     const host = $('barChart');
@@ -1141,7 +1630,11 @@ footer code {
     const ph = H - pad.t - pad.b;
 
     const n = rows.length;
-    const max = niceScale(Math.max(rows[n - 1].interest, rows[0].contribution), 4).max;
+    const vals = rows.map((r) => ({
+      pay: conv(r.contribution, r.deflator),
+      int: conv(r.interest, r.deflator),
+    }));
+    const max = niceScale(Math.max.apply(null, vals.map((v) => Math.max(v.pay, v.int))), 4).max;
     const y = (v) => pad.t + ph - (v / max) * ph;
     const gw = pw / n;
     const bw = Math.max(1.5, Math.min(15, (gw - 4) / 2 - 1));
@@ -1150,6 +1643,9 @@ footer code {
     const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img' });
     svg.appendChild(sv('title', {})).textContent =
       'Versements de l\'année comparés aux intérêts produits dans l\'année';
+
+    const hover = sv('rect', { y: pad.t, height: ph, width: gw, opacity: 0 }, { fill: 'var(--rule)' });
+    svg.appendChild(hover);
 
     for (let i = 0; i <= 4; i++) {
       const v = (max / 4) * i;
@@ -1160,18 +1656,10 @@ footer code {
       svg.appendChild(t);
     }
 
-    rows.forEach((r, i) => {
+    vals.forEach((v, i) => {
       const cx = gx(i);
-      const xPay = cx - bw - 1;
-      const xInt = cx + 1;
-      const hPay = Math.max(0, y(0) - y(r.contribution));
-      const hInt = Math.max(0, y(0) - y(r.interest));
-      if (hPay > 0) {
-        svg.appendChild(sv('path', { d: barPath(xPay, y(r.contribution), bw, hPay, 4) }, { fill: 'var(--pay-fill)' }));
-      }
-      if (hInt > 0) {
-        svg.appendChild(sv('path', { d: barPath(xInt, y(r.interest), bw, hInt, 4) }, { fill: 'var(--int-fill)' }));
-      }
+      if (v.pay > 0) svg.appendChild(sv('path', { d: barPath(cx - bw - 1, y(v.pay), bw, y(0) - y(v.pay), 4) }, { fill: 'var(--pay-fill)' }));
+      if (v.int > 0) svg.appendChild(sv('path', { d: barPath(cx + 1, y(v.int), bw, y(0) - y(v.int), 4) }, { fill: 'var(--int-fill)' }));
     });
 
     svg.appendChild(sv('line', { x1: pad.l, x2: W - pad.r, y1: y(0), y2: y(0), class: 'axis' }));
@@ -1183,9 +1671,7 @@ footer code {
 
     if (sum.tippingYear) {
       const bx = gx(sum.tippingYear - 1);
-      svg.appendChild(sv('line', {
-        x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3',
-      }, { stroke: 'var(--int)' }));
+      svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
       const anchor = bx > pad.l + pw * 0.72 ? 'end' : 'start';
       const lbl = sv('text', { x: bx + (anchor === 'end' ? -5 : 5), y: pad.t - 10, 'text-anchor': anchor }, { fill: 'var(--int)' });
       lbl.textContent = 'les intérêts dépassent vos versements · an ' + sum.tippingYear;
@@ -1194,30 +1680,26 @@ footer code {
 
     const hit = sv('rect', { x: pad.l, y: pad.t, width: pw, height: ph, fill: 'transparent' });
     svg.appendChild(hit);
-    const hover = sv('rect', { y: pad.t, height: ph, opacity: 0, width: gw }, { fill: 'var(--rule)' });
-    svg.insertBefore(hover, svg.firstChild.nextSibling);
 
     function move(ev) {
       const box = svg.getBoundingClientRect();
       const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - box.left) * (W / box.width);
-      let i = Math.floor((px - pad.l) / gw);
-      i = Math.max(0, Math.min(n - 1, i));
+      const i = Math.max(0, Math.min(n - 1, Math.floor((px - pad.l) / gw)));
       const r = rows[i];
       hover.setAttribute('x', pad.l + i * gw);
       hover.setAttribute('opacity', 0.5);
       tip.innerHTML = `
         <div class="tt-year">Année ${r.year}</div>
-        <div class="tt-row"><span class="tt-k"><i class="swatch pay"></i>Vous versez</span><span>${eur0.format(r.contribution)}</span></div>
-        <div class="tt-row"><span class="tt-k"><i class="swatch int"></i>Intérêts produits</span><span>${eur0.format(r.interest)}</span></div>
-        <div class="tt-row total"><span>Capital fin d'année</span><span>${eur0.format(r.close)}</span></div>`;
+        <div class="tt-row"><span class="tt-k"><i class="swatch pay"></i>Vous versez</span><span>${eur0.format(vals[i].pay)}</span></div>
+        <div class="tt-row"><span class="tt-k"><i class="swatch int"></i>Intérêts produits</span><span>${eur0.format(vals[i].int)}</span></div>
+        <div class="tt-row total"><span>Capital fin d'année</span><span>${eur0.format(conv(r.close, r.deflator))}</span></div>`;
       tip.dataset.show = 'true';
-      const left = ((pad.l + i * gw + gw / 2) / W) * host.clientWidth;
       const tw = tip.offsetWidth;
+      const left = (gx(i) / W) * host.clientWidth;
       tip.style.left = Math.max(0, Math.min(host.clientWidth - tw, left - tw / 2)) + 'px';
       tip.style.top = '4px';
     }
-
-    function leave() { hover.setAttribute('opacity', 0); tip.dataset.show = 'false'; }
+    const leave = () => { hover.setAttribute('opacity', 0); tip.dataset.show = 'false'; };
 
     hit.addEventListener('mousemove', move);
     hit.addEventListener('mouseleave', leave);
@@ -1231,62 +1713,58 @@ footer code {
   /* ---------- tableau ---------- */
 
   function renderTable(rows, sum) {
-    const thead = $('thead');
-    const tbody = $('tbody');
+    const unitNote = units === 'real' ? ' Montants en euros d\'aujourd\'hui.' : '';
+    const rowClass = (year) => {
+      const c = [];
+      if (sum.tippingYear === year) c.push('is-tipping');
+      if (year % 10 === 0) c.push('is-decade');
+      return c.join(' ');
+    };
+    const c = (v, d) => eur2.format(conv(v, d));
 
     if (mode === 'compare') {
-      $('tableNote').textContent = 'Les deux méthodes de capitalisation côte à côte. À taux égal, capitaliser chaque mois rapporte davantage.';
-      thead.innerHTML = ['Année', 'Épargne cumulée', 'Capital début (annuel)', 'Intérêts (annuel)',
+      $('tableNote').textContent = 'Les deux méthodes de capitalisation côte à côte. À taux égal, capitaliser chaque mois rapporte davantage.' + unitNote;
+      $('thead').innerHTML = ['Année', 'Épargne cumulée', 'Capital début (annuel)', 'Intérêts (annuel)',
         'Capital fin (annuel)', 'Int. cumulés (annuel)', 'Intérêts (mensuel)', 'Capital fin (mensuel)',
         'Int. cumulés (mensuel)', 'Écart mensuel − annuel']
         .map((h) => `<th scope="col">${h}</th>`).join('');
-
-      tbody.innerHTML = result.annual.map((a, i) => {
+      $('tbody').innerHTML = result.annual.map((a, i) => {
         const m = result.monthlyC[i];
-        const cls = [];
-        if (sum.tippingYear === a.year) cls.push('is-tipping');
-        if (a.year % 10 === 0) cls.push('is-decade');
-        return `<tr class="${cls.join(' ')}">
+        return `<tr class="${rowClass(a.year)}">
           <td>${a.year}</td>
-          <td>${eur2.format(a.savedCumul)}</td>
-          <td>${eur2.format(a.open)}</td>
-          <td class="c-int">${eur2.format(a.interest)}</td>
-          <td class="c-strong">${eur2.format(a.close)}</td>
-          <td class="c-int">${eur2.format(a.interestCumul)}</td>
-          <td class="c-int">${eur2.format(m.interest)}</td>
-          <td class="c-strong">${eur2.format(m.close)}</td>
-          <td class="c-int">${eur2.format(m.interestCumul)}</td>
-          <td>${eur2.format(m.close - a.close)}</td>
+          <td>${c(a.savedCumul, a.deflator)}</td>
+          <td>${c(a.open, a.deflator)}</td>
+          <td class="c-int">${c(a.interest, a.deflator)}</td>
+          <td class="c-strong">${c(a.close, a.deflator)}</td>
+          <td class="c-int">${c(a.interestCumul, a.deflator)}</td>
+          <td class="c-int">${c(m.interest, m.deflator)}</td>
+          <td class="c-strong">${c(m.close, m.deflator)}</td>
+          <td class="c-int">${c(m.interestCumul, m.deflator)}</td>
+          <td>${c(m.close - a.close, a.deflator)}</td>
         </tr>`;
       }).join('');
       return;
     }
 
-    $('tableNote').textContent = mode === 'monthly'
+    $('tableNote').textContent = (mode === 'monthly'
       ? 'Capitalisation mensuelle : les intérêts du mois s\'ajoutent au solde et produisent à leur tour dès le mois suivant.'
-      : 'Capitalisation annuelle : les intérêts d\'une année portent sur le capital présent en début d\'année.';
+      : 'Capitalisation annuelle : les intérêts d\'une année portent sur le capital présent en début d\'année.') + unitNote;
 
-    thead.innerHTML = ['Année', 'Versement de l\'année', 'Capital début d\'année', 'Capital + épargne',
+    $('thead').innerHTML = ['Année', 'Versement de l\'année', 'Capital début d\'année', 'Capital + épargne',
       'Intérêts de l\'année', 'Capital fin d\'année', 'Total versé', 'Intérêts composés cumulés', 'Part des intérêts']
       .map((h) => `<th scope="col">${h}</th>`).join('');
 
-    tbody.innerHTML = rows.map((r) => {
-      const cls = [];
-      if (sum.tippingYear === r.year) cls.push('is-tipping');
-      if (r.year % 10 === 0) cls.push('is-decade');
-      const share = r.close > 0 ? r.interestCumul / r.close : 0;
-      return `<tr class="${cls.join(' ')}">
+    $('tbody').innerHTML = rows.map((r) => `<tr class="${rowClass(r.year)}">
         <td>${r.year}</td>
-        <td class="c-pay">${eur2.format(r.contribution)}</td>
-        <td>${eur2.format(r.open)}</td>
-        <td>${eur2.format(r.base)}</td>
-        <td class="c-int">${eur2.format(r.interest)}</td>
-        <td class="c-strong">${eur2.format(r.close)}</td>
-        <td class="c-pay">${eur2.format(r.paidIn)}</td>
-        <td class="c-int">${eur2.format(r.interestCumul)}</td>
-        <td>${pct1.format(share)}</td>
-      </tr>`;
-    }).join('');
+        <td class="c-pay">${c(r.contribution, r.deflator)}</td>
+        <td>${c(r.open, r.deflator)}</td>
+        <td>${c(r.base, r.deflator)}</td>
+        <td class="c-int">${c(r.interest, r.deflator)}</td>
+        <td class="c-strong">${c(r.close, r.deflator)}</td>
+        <td class="c-pay">${c(r.paidIn, r.deflator)}</td>
+        <td class="c-int">${c(r.interestCumul, r.deflator)}</td>
+        <td>${pct1.format(r.close > 0 ? r.interestCumul / r.close : 0)}</td>
+      </tr>`).join('');
   }
 
   /* ---------- câblage ---------- */
@@ -1298,43 +1776,33 @@ footer code {
   }
 
   inputs.monthly.addEventListener('input', () => {
+    if (inputs.monthly.readOnly) return;
     inputs.yearly.value = round2((+inputs.monthly.value || 0) * 12);
     schedule();
   });
   inputs.yearly.addEventListener('input', () => {
+    if (inputs.yearly.readOnly) return;
     inputs.monthly.value = round2((+inputs.yearly.value || 0) / 12);
     schedule();
   });
-  for (const k of ['initial', 'rate', 'years']) inputs[k].addEventListener('input', schedule);
-
-  $('modeGroup').addEventListener('click', (e) => {
-    const b = e.target.closest('button[data-mode]');
-    if (b) setMode(b.dataset.mode);
-  });
-
-  /* thème */
-  const root = document.documentElement;
-  const toggle = $('themeToggle');
-  try {
-    const saved = localStorage.getItem(STORE + '.theme');
-    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
-  } catch (e) { /* stockage indisponible */ }
-
-  function currentTheme() {
-    const set = root.getAttribute('data-theme');
-    if (set === 'dark' || set === 'light') return set;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  for (const k of ['initial', 'target', 'rate', 'years', 'fees', 'inflation']) {
+    inputs[k].addEventListener('input', schedule);
   }
-  function syncToggle() {
-    toggle.textContent = currentTheme() === 'dark' ? 'Thème clair' : 'Thème sombre';
-  }
-  toggle.addEventListener('click', () => {
-    const next = currentTheme() === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem(STORE + '.theme', next); } catch (e) { /* stockage indisponible */ }
-    syncToggle();
+
+  $('envelope').innerHTML = Object.keys(Compound.ENVELOPES)
+    .map((k) => `<option value="${k}">${Compound.ENVELOPES[k].label}</option>`).join('');
+  $('envelope').addEventListener('change', (e) => { envelope = e.target.value; syncControls(); render(); });
+
+  const onSegment = (groupId, attr, apply) => $(groupId).addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-' + attr + ']');
+    if (!b) return;
+    apply(b.dataset[attr]);
+    syncControls();
     render();
   });
+  onSegment('modeGroup', 'mode', (v) => { mode = v; });
+  onSegment('goalGroup', 'goal', (v) => { goal = v; });
+  onSegment('unitsGroup', 'units', (v) => { units = v; });
 
   let rt = null;
   window.addEventListener('resize', () => {
@@ -1342,15 +1810,14 @@ footer code {
     rt = setTimeout(() => {
       if (!result) return;
       const rows = activeRows();
-      const sum = Compound.summarize(rows, result.meta);
+      const sum = Compound.summarize(rows, result.meta, envelope);
       renderArea(rows, sum);
       renderBars(rows, sum);
     }, 120);
   });
 
   restore();
-  syncToggle();
-  setMode(mode, false);
+  syncControls();
   render();
 })();
 

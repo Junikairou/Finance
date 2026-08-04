@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulateur — Boule de neige</title>
+<meta name="description" content="Simulez année par année les intérêts annuels, le capital atteint et les intérêts composés cumulés de votre épargne mensuelle, frais, inflation et fiscalité compris.">
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="index.html">Accueil</a>
+    <a href="simulateur.html">Simulateur</a>
+    <a href="comprendre.html">Comprendre</a>
+  </nav>
+  <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
+</header>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">Simulateur</p>
+    <h1>Ce que vos versements produisent, année après année</h1>
+    <p class="lede">Vous versez la même somme chaque mois. Les intérêts, eux, produisent à leur tour des intérêts&nbsp;: c'est là que la courbe décolle.</p>
+  </div>
+
+  <section class="panel" aria-labelledby="paramsTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="paramsTitle">Vos paramètres</h2>
+        <p class="note">Modifiez une valeur et tout se recalcule instantanément.</p>
+      </div>
+      <p class="hint" id="rateHint"></p>
+    </div>
+
+    <div class="panel-body">
+      <div class="field field-mode">
+        <label id="goalLabel">Point de départ</label>
+        <div class="segmented" role="group" aria-labelledby="goalLabel" id="goalGroup">
+          <button type="button" data-goal="contribution" aria-pressed="true">Je verse tant par mois</button>
+          <button type="button" data-goal="target" aria-pressed="false">Je vise un capital</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="field">
+          <label for="initial">Capital initial</label>
+          <div class="input-shell">
+            <input type="number" id="initial" min="0" step="100" value="0" inputmode="decimal">
+            <span class="unit">€</span>
+          </div>
+          <span class="hint">Ce que vous placez au départ</span>
+        </div>
+
+        <div class="field" id="targetField" hidden>
+          <label for="target">Objectif à atteindre</label>
+          <div class="input-shell">
+            <input type="number" id="target" min="0" step="10000" value="200000" inputmode="decimal">
+            <span class="unit">€</span>
+          </div>
+          <span class="hint">Capital visé en fin de période</span>
+        </div>
+
+        <div class="field">
+          <label for="monthly">Épargne mensuelle</label>
+          <div class="input-shell">
+            <input type="number" id="monthly" min="0" step="10" value="100" inputmode="decimal">
+            <span class="unit">€ / mois</span>
+          </div>
+          <span class="hint" id="monthlyHint"></span>
+        </div>
+
+        <div class="field" id="yearlyField">
+          <label for="yearly">Épargne annuelle</label>
+          <div class="input-shell">
+            <input type="number" id="yearly" min="0" step="120" value="1200" inputmode="decimal">
+            <span class="unit">€ / an</span>
+          </div>
+          <span class="hint">Épargne mensuelle × 12</span>
+        </div>
+
+        <div class="field">
+          <label for="rate">Rendement annuel brut</label>
+          <div class="input-shell">
+            <input type="number" id="rate" min="0" max="100" step="0.1" value="8" inputmode="decimal">
+            <span class="unit">%</span>
+          </div>
+          <span class="hint" id="rateMonthHint"></span>
+        </div>
+
+        <div class="field">
+          <label for="years">Durée</label>
+          <div class="input-shell">
+            <input type="number" id="years" min="1" max="70" step="1" value="30" inputmode="numeric">
+            <span class="unit">ans</span>
+          </div>
+          <span class="hint">De 1 à 70 ans</span>
+        </div>
+      </div>
+
+      <p class="solved" id="solved" hidden></p>
+    </div>
+
+    <div class="panel-body panel-body-alt">
+      <p class="section-label">Hypothèses</p>
+      <div class="controls">
+        <div class="field">
+          <label for="fees">Frais de gestion</label>
+          <div class="input-shell">
+            <input type="number" id="fees" min="0" max="10" step="0.05" value="0" inputmode="decimal">
+            <span class="unit">% / an</span>
+          </div>
+          <span class="hint" id="feesHint"></span>
+        </div>
+
+        <div class="field">
+          <label for="inflation">Inflation</label>
+          <div class="input-shell">
+            <input type="number" id="inflation" min="0" max="20" step="0.1" value="2" inputmode="decimal">
+            <span class="unit">% / an</span>
+          </div>
+          <span class="hint">Pour le pouvoir d'achat</span>
+        </div>
+
+        <div class="field">
+          <label for="envelope">Enveloppe fiscale</label>
+          <div class="input-shell">
+            <select id="envelope"></select>
+          </div>
+          <span class="hint" id="envelopeHint"></span>
+        </div>
+
+        <div class="field field-wide">
+          <label id="modeLabel">Capitalisation</label>
+          <div class="segmented" role="group" aria-labelledby="modeLabel" id="modeGroup">
+            <button type="button" data-mode="monthly" aria-pressed="true">Mensuelle</button>
+            <button type="button" data-mode="annual" aria-pressed="false">Annuelle</button>
+            <button type="button" data-mode="compare" aria-pressed="false">Comparer</button>
+          </div>
+          <span class="hint" id="modeHint"></span>
+        </div>
+
+        <div class="field field-wide">
+          <label id="unitsLabel">Montants affichés</label>
+          <div class="segmented" role="group" aria-labelledby="unitsLabel" id="unitsGroup">
+            <button type="button" data-units="nominal" aria-pressed="true">Euros courants</button>
+            <button type="button" data-units="real" aria-pressed="false">Euros d'aujourd'hui</button>
+          </div>
+          <span class="hint" id="unitsHint"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tiles" id="tiles" aria-label="Synthèse"></section>
+
+  <section class="panel" aria-labelledby="snowTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="snowTitle">La boule de neige</h2>
+        <p class="note">En bas, l'argent sorti de votre poche. Au-dessus, les intérêts composés cumulés — la part que vous n'avez pas versée.</p>
+      </div>
+      <div class="legend">
+        <span><i class="swatch pay"></i>Versements cumulés</span>
+        <span><i class="swatch int"></i>Intérêts composés cumulés</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="chart" id="areaChart">
+        <div class="tooltip" id="areaTip" role="status" aria-live="off"></div>
+      </div>
+    </div>
+    <p class="readout" id="readout"></p>
+  </section>
+
+  <section class="panel" aria-labelledby="yearTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="yearTitle">Chaque année&nbsp;: votre effort contre le travail des intérêts</h2>
+        <p class="note">Vos versements restent plats. Les intérêts de l'année, eux, grimpent tout seuls. L'année où la barre dorée dépasse la bleue, votre capital gagne plus que vous n'y mettez.</p>
+      </div>
+      <div class="legend">
+        <span><i class="swatch pay"></i>Versements de l'année</span>
+        <span><i class="swatch int"></i>Intérêts de l'année</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="chart" id="barChart">
+        <div class="tooltip" id="barTip" role="status" aria-live="off"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="tableTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="tableTitle">Le détail, année par année</h2>
+        <p class="note" id="tableNote"></p>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="table">
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Comment c'est calculé.</strong> Capitalisation <em>annuelle</em>&nbsp;: <code>intérêts = capital début × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. Capitalisation <em>mensuelle</em>&nbsp;: <code>solde = solde × (1 + taux / 12) + versement</code>, douze fois par an. Les frais de gestion sont prélevés sur l'encours et ramènent le taux brut à un taux net. L'impôt est calculé à la sortie, sur les gains. <a href="comprendre.html">Le détail des formules</a>.</p>
+    <p>Simulation à taux constant. Les rendements réels varient d'une année à l'autre, la fiscalité est simplifiée&nbsp;: ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat et ne constituent pas un conseil en investissement.</p>
+  </footer>
+
+</div>
+
+<script src="assets/calc.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

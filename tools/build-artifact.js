@@ -1,6 +1,9 @@
-/* Génère une page autonome (CSS + JS intégrés) à partir de index.html.
+/* Génère une page autonome (CSS + JS intégrés) à partir de simulateur.html.
    Sortie : dist/boule-de-neige.html — un seul fichier, sans dépendance
-   externe, publiable ou partageable tel quel.
+   externe, ouvrable hors ligne ou publiable tel quel.
+
+   Les liens de navigation sont retirés : la page autonome est le simulateur
+   seul, sans les autres pages du site.
 
    Usage : node tools/build-artifact.js
 */
@@ -11,32 +14,33 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 
-const html = read('index.html');
-const css = read('assets/styles.css');
-const calc = read('assets/calc.js');
-const app = read('assets/app.js');
+const html = read('simulateur.html');
 
-const body = html.slice(html.indexOf('<body>') + '<body>'.length, html.lastIndexOf('</body>'))
-  .replace(/\s*<script src="assets\/calc\.js"><\/script>\s*/, '\n')
-  .replace(/\s*<script src="assets\/app\.js"><\/script>\s*/, '\n')
+const body = html
+  .slice(html.indexOf('<body>') + '<body>'.length, html.lastIndexOf('</body>'))
+  .replace(/<nav class="nav"[\s\S]*?<\/nav>/, '')
+  .replace(/\s*<script src="assets\/(calc|app)\.js"><\/script>/g, '')
   .trim();
 
 const title = (html.match(/<title>([^<]*)<\/title>/) || [, 'Boule de neige'])[1];
 const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [, ''])[1];
 
-const out = `<title>${title}</title>
+const out = `<title>${title.replace('Simulateur — ', '')}</title>
 <meta name="description" content="${desc}">
 <style>
-${css}
+${read('assets/styles.css')}
 </style>
 
 ${body}
 
 <script>
-${calc}
+${read('assets/site.js')}
 </script>
 <script>
-${app}
+${read('assets/calc.js')}
+</script>
+<script>
+${read('assets/app.js')}
 </script>
 `;
 

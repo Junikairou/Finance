@@ -1,86 +1,108 @@
-# Boule de neige — simulateur d'intérêts composés
+# Boule de neige — site sur les intérêts composés
 
-Application web qui montre, année par année, ce que produit une épargne
-mensuelle régulière : les intérêts de l'année, le capital atteint, et les
-intérêts composés cumulés depuis le départ — autrement dit l'effet boule de
-neige.
+Un site statique en trois pages qui montre, année par année, ce que produit une
+épargne mensuelle régulière : les intérêts de l'année, le capital atteint et les
+intérêts composés cumulés depuis le départ — l'effet boule de neige.
+
+| Page | Rôle |
+| --- | --- |
+| `index.html` | Accueil : le mécanisme en une page, un exemple chiffré |
+| `simulateur.html` | L'outil : paramètres, graphiques, tableau année par année |
+| `comprendre.html` | Les formules exactes, les hypothèses et leurs limites |
 
 ## Ouvrir
 
 Ouvrez `index.html` dans un navigateur. Aucune installation, aucun serveur,
-aucune connexion réseau nécessaire.
+aucune connexion réseau.
 
-Pour produire une page autonome en un seul fichier (CSS et JS intégrés) :
+Pour une page autonome en un seul fichier (le simulateur seul, CSS et JS
+intégrés) :
 
 ```
 node tools/build-artifact.js   # → dist/boule-de-neige.html
 ```
 
-## Ce que l'application montre
+## Publication
 
-- **Cinq indicateurs de synthèse** : capital final, total versé de votre poche,
-  intérêts composés gagnés, intérêts de la dernière année, et l'**année de
-  bascule** — celle où les intérêts d'une année dépassent vos versements de
-  l'année.
-- **Le graphique « boule de neige »** : deux aires empilées, vos versements
-  cumulés en bas, les intérêts composés cumulés au-dessus. La deuxième mange
-  peu à peu la première.
-- **Le graphique annuel** : vos versements (plats) face aux intérêts de l'année
-  (qui grimpent seuls). L'année où la barre dorée dépasse la bleue est marquée.
-- **Le tableau détaillé**, une ligne par année : versement de l'année, capital
-  de début d'année, capital + épargne, intérêts de l'année, capital de fin
-  d'année, total versé, intérêts composés cumulés et part des intérêts.
+`.github/workflows/pages.yml` déploie le site sur GitHub Pages à chaque push sur
+`main`. Il faut l'activer une fois : **Settings → Pages → Source : GitHub
+Actions**.
 
-Les paramètres (capital initial, épargne mensuelle ou annuelle, taux annuel,
-durée, mode de capitalisation) sont conservés d'une visite à l'autre.
+## Ce que fait le simulateur
 
-## Les deux modes de capitalisation
+- **Deux points de départ** : « je verse tant par mois », ou « je vise un
+  capital » — l'effort mensuel nécessaire est alors calculé par inversion de la
+  formule.
+- **Deux modes de capitalisation**, mensuelle et annuelle, plus un mode
+  comparaison qui affiche les deux côte à côte.
+- **Des hypothèses réalistes** : frais de gestion prélevés sur l'encours,
+  inflation (bascule de tous les affichages en euros d'aujourd'hui), impôt à la
+  sortie selon l'enveloppe (Livret A, PEA, assurance-vie, compte-titres).
+- **L'année de bascule** : la première année où les intérêts produits dépassent
+  les versements de l'année, repérée sur les deux graphiques et dans le tableau.
 
-**Annuelle** — les intérêts d'une année portent sur le capital présent en début
-d'année :
+Les paramètres sont conservés d'une visite à l'autre.
+
+## Les formules
+
+Capitalisation annuelle — les intérêts portent sur le capital de début d'année :
 
 ```
 intérêts    = capital_début × taux
 capital_fin = capital_début + épargne_annuelle + intérêts
 ```
 
-**Mensuelle** — chaque mois, les intérêts s'ajoutent au solde et produisent à
-leur tour dès le mois suivant :
+Capitalisation mensuelle — les intérêts du mois produisent dès le mois suivant :
 
 ```
 solde = solde × (1 + taux / 12) + versement_mensuel     (× 12 par an)
 ```
 
-Dans les deux cas, les **intérêts composés cumulés** d'une année sont l'écart
-entre le capital atteint et tout ce qui a été versé depuis le départ :
+Frais, inflation, impôt :
+
+```
+taux net           = taux brut − frais de gestion
+euros d'aujourd'hui = montant / (1 + inflation)^n
+impôt              = max(0, gains − abattement) × taux de l'enveloppe
+```
+
+Objectif inversé, avec `m = taux net / 12` et `n = années × 12` :
+
+```
+versement mensuel = [ cible − capital_initial × (1 + m)^n ] × m / [ (1 + m)^n − 1 ]
+```
+
+Intérêts composés cumulés d'une année :
 
 ```
 intérêts_cumulés = capital_fin − (capital_initial + épargne_annuelle × n)
 ```
 
-Le mode **Comparer** affiche les deux méthodes côte à côte : à taux identique,
-capitaliser chaque mois rapporte davantage.
-
 ## Structure
 
 ```
-index.html                 structure de la page
+index.html · simulateur.html · comprendre.html
 assets/styles.css          thème clair et sombre, mise en page
+assets/site.js             navigation et bascule de thème, communes aux pages
 assets/calc.js             moteur de calcul (utilisable aussi sous Node)
-assets/app.js              interface, graphiques SVG, tableau
+assets/app.js              simulateur : interface, graphiques SVG, tableau
 tools/build-artifact.js    génère la page autonome dans dist/
 ```
 
 `assets/calc.js` s'utilise seul :
 
 ```js
-const { project, summarize } = require('./assets/calc.js');
+const { project, summarize, solveMonthly } = require('./assets/calc.js');
+
 const r = project({ initial: 0, monthly: 100, rate: 0.08, years: 30 });
-summarize(r.monthlyC, r.meta).finalCapital; // 149 035,94 €
+summarize(r.monthlyC, r.meta, 'exonere').finalCapital; // 149 035,94
+
+solveMonthly({ initial: 0, target: 200000, rate: 0.08, years: 30 }); // 134,20 €/mois
 ```
 
 ## Limites
 
-Simulation à taux constant, hors fiscalité, hors frais de gestion et hors
-inflation. Les rendements réels varient d'une année à l'autre : ces chiffres
-illustrent un mécanisme, ils ne prédisent pas un résultat.
+Rendement constant, aucun aléa simulé, versements non indexés, fiscalité
+simplifiée (impôt appliqué en une fois sur la totalité des gains en fin de
+période). Ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat
+et ne constituent pas un conseil en investissement.

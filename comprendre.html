@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprendre les intérêts composés — Boule de neige</title>
+<meta name="description" content="Les formules exactes derrière l'effet boule de neige : capitalisation mensuelle et annuelle, frais de gestion, inflation, fiscalité, et ce que le simulateur ne dit pas.">
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="index.html">Accueil</a>
+    <a href="simulateur.html">Simulateur</a>
+    <a href="comprendre.html">Comprendre</a>
+  </nav>
+  <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
+</header>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">Comprendre</p>
+    <h1>Les formules, sans rien cacher</h1>
+    <p class="lede">Tout ce que le simulateur calcule tient en cinq formules. Les voici, avec les hypothèses qu'elles supposent et les limites qu'elles ont.</p>
+  </div>
+
+  <article class="prose">
+
+    <h2>Intérêt simple, intérêt composé</h2>
+    <p>Un <strong>intérêt simple</strong> ne porte que sur la mise de départ. 1 000 € à 5 % rapportent 50 € chaque année, indéfiniment&nbsp;: 50 €, 50 €, 50 €.</p>
+    <p>Un <strong>intérêt composé</strong> porte sur le capital <em>et</em> sur les intérêts déjà encaissés. La deuxième année, ce ne sont plus 1 000 € qui travaillent mais 1 050 € — donc 52,50 € d'intérêts. La troisième, 55,13 €. L'écart paraît dérisoire&nbsp;; c'est lui qui fait toute la différence sur trente ans.</p>
+    <p class="pull">Sur 30 ans à 8 %, 1 000 € rapportent 2 400 € d'intérêts simples — et <strong>9 063 € d'intérêts composés</strong>. Même mise, même taux, même durée.</p>
+
+    <h2>L'effet boule de neige</h2>
+    <p>Ajoutez maintenant un versement régulier. Chaque euro versé démarre son propre cycle de composition, et rejoint la masse qui travaille déjà. Deux forces s'additionnent&nbsp;:</p>
+    <ul>
+      <li><strong>Votre effort</strong> — constant. 100 € par mois, chaque mois, jusqu'à la fin.</li>
+      <li><strong>Le travail du capital</strong> — croissant. Il ne dépend pas de vous mais de la taille de la boule.</li>
+    </ul>
+    <p>La deuxième force finit toujours par dépasser la première. Le simulateur appelle ce moment l'<strong>année de bascule</strong>&nbsp;: la première année où les intérêts produits dépassent les versements de l'année. À 8 % avec 100 € par mois, elle tombe à l'année 10.</p>
+
+    <h2>Capitalisation annuelle</h2>
+    <p>Les intérêts d'une année portent sur le capital présent en <strong>début</strong> d'année. L'épargne versée pendant l'année ne produit d'intérêts qu'à partir de l'année suivante.</p>
+    <span class="formula">intérêts de l'année = capital début × taux
+capital fin d'année  = capital début + épargne de l'année + intérêts de l'année</span>
+    <p>C'est le modèle le plus prudent, et le plus simple à vérifier à la main.</p>
+
+    <h3>Formule fermée</h3>
+    <span class="formula">capital(N) = C₀ × (1 + r)^N  +  A × [ (1 + r)^N − 1 ] / r</span>
+    <p>où <code>C₀</code> est le capital initial, <code>A</code> l'épargne annuelle, <code>r</code> le taux net et <code>N</code> le nombre d'années.</p>
+
+    <h2>Capitalisation mensuelle</h2>
+    <p>Chaque mois, les intérêts s'ajoutent au solde et produisent à leur tour dès le mois suivant. Le versement est ajouté en fin de mois.</p>
+    <span class="formula">solde = solde × (1 + taux / 12) + versement mensuel     (répété 12 fois par an)</span>
+    <p>À taux affiché identique, capitaliser chaque mois rapporte davantage&nbsp;: les intérêts commencent à travailler onze mois plus tôt. Sur 100 € par mois à 8 % pendant 30 ans, l'écart atteint 13 096 €. Le mode <strong>Comparer</strong> du simulateur affiche les deux colonnes côte à côte.</p>
+
+    <h2>Objectif inversé</h2>
+    <p>La formule fermée s'inverse. Pour atteindre un capital cible <code>T</code> en <code>n</code> mois avec un taux mensuel <code>m = r / 12</code>&nbsp;:</p>
+    <span class="formula">versement mensuel = [ T − C₀ × (1 + m)^n ] × m / [ (1 + m)^n − 1 ]</span>
+    <p>Si le résultat est négatif, votre capital initial atteint seul l'objectif&nbsp;: aucun versement n'est nécessaire.</p>
+
+    <h2>Ce qui ronge le rendement</h2>
+
+    <h3>Les frais de gestion</h3>
+    <p>Prélevés chaque année sur l'encours — pas sur les gains, sur <em>tout</em> le capital. Un fonds à 1,5 % de frais transforme un rendement brut de 8 % en 6,5 % net. Le simulateur applique cette soustraction à chaque période&nbsp;:</p>
+    <span class="formula">taux net = taux brut − frais de gestion</span>
+    <p class="pull">Sur 30 ans à 100 € par mois, passer de 0 % à 1,5 % de frais coûte <strong>38 418 €</strong> de capital final. Les frais sont la variable la plus sous-estimée de l'épargne longue.</p>
+
+    <h3>L'inflation</h3>
+    <p>Elle ne change aucun montant&nbsp;: elle change ce qu'ils achètent. Le simulateur convertit les euros futurs en euros d'aujourd'hui avec un déflateur&nbsp;:</p>
+    <span class="formula">valeur en euros d'aujourd'hui = montant / (1 + inflation)^n</span>
+    <p>À 2 % d'inflation, 149 036 € dans 30 ans achètent ce que 82 278 € achètent aujourd'hui. Le bouton <strong>Euros d'aujourd'hui</strong> bascule tous les affichages, graphiques compris.</p>
+
+    <h3>L'impôt</h3>
+    <p>Calculé à la sortie, sur les gains uniquement&nbsp;:</p>
+    <span class="formula">impôt = max(0, gains − abattement) × taux de l'enveloppe</span>
+    <dl class="dl">
+      <div><dt>Livret A / LEP</dt><dd>Exonérés d'impôt et de prélèvements sociaux, mais plafonnés et à faible rendement.</dd></div>
+      <div><dt>PEA après 5 ans</dt><dd>17,2 % de prélèvements sociaux, pas d'impôt sur le revenu. Avant 5 ans, le retrait est taxé à 30 %.</dd></div>
+      <div><dt>Assurance-vie après 8 ans</dt><dd>24,7 % au total, après un abattement annuel de 4 600 € sur les gains (9 200 € pour un couple).</dd></div>
+      <div><dt>Compte-titres</dt><dd>Flat tax de 30 % sur les gains, sans condition de durée.</dd></div>
+    </dl>
+    <p>C'est une <strong>simplification</strong>&nbsp;: l'impôt est appliqué en une fois sur la totalité des gains en fin de période. Dans la réalité il porte sur la part de gains contenue dans chaque retrait, et les taux évoluent avec la loi. Vérifiez votre situation auprès d'une source officielle.</p>
+
+    <h2>Ce que ce site ne fait pas</h2>
+    <ul>
+      <li><strong>Un rendement constant n'existe pas.</strong> Un marché fait +22 % puis −18 % puis +7 %. La moyenne peut être de 8 %, la trajectoire n'a rien d'une courbe lisse — et l'ordre des années compte si vous retirez de l'argent.</li>
+      <li><strong>Aucun aléa n'est simulé.</strong> Pas de krach, pas de coup dur, pas d'année sans versement.</li>
+      <li><strong>Les versements ne sont pas indexés.</strong> 100 € en année 1 et 100 € en année 30 ne représentent pas le même effort.</li>
+      <li><strong>Ce n'est pas un conseil en investissement.</strong> C'est un outil pour comprendre une mécanique, pas pour choisir un placement.</li>
+    </ul>
+
+    <h2>Glossaire</h2>
+    <dl class="dl">
+      <div><dt>Capital initial</dt><dd>La somme placée au départ, avant tout versement mensuel.</dd></div>
+      <div><dt>Versement</dt><dd>Ce que vous ajoutez périodiquement. Constant dans ce simulateur.</dd></div>
+      <div><dt>Rendement brut</dt><dd>La performance annuelle avant frais, impôts et inflation.</dd></div>
+      <div><dt>Taux net</dt><dd>Le rendement brut moins les frais de gestion. C'est lui qui fait grossir le capital.</dd></div>
+      <div><dt>Intérêts cumulés</dt><dd>L'écart entre le capital atteint et tout ce que vous avez versé depuis le départ.</dd></div>
+      <div><dt>Année de bascule</dt><dd>La première année où les intérêts produits dépassent les versements de l'année.</dd></div>
+      <div><dt>Euros d'aujourd'hui</dt><dd>Un montant futur ramené à son pouvoir d'achat actuel.</dd></div>
+    </dl>
+
+    <div class="cta">
+      <a class="btn btn-primary" href="simulateur.html">Passer au simulateur</a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p>Les formules de cette page sont exactement celles implémentées dans <code>assets/calc.js</code>. Rien n'est arrondi en coulisses&nbsp;: seuls les affichages le sont.</p>
+  </footer>
+
+</div>
+</body>
+</html>

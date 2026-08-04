@@ -3,152 +3,92 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Boule de neige — simulateur d'intérêts composés</title>
-<meta name="description" content="Visualisez année par année ce que produisent vos versements mensuels : intérêts annuels, capital + intérêts, et intérêts composés cumulés.">
+<title>Boule de neige — comprendre les intérêts composés</title>
+<meta name="description" content="Un simulateur qui montre, année par année, ce que produit une épargne mensuelle : intérêts annuels, capital atteint et intérêts composés cumulés.">
 <link rel="stylesheet" href="assets/styles.css">
+<script src="assets/site.js" defer></script>
 </head>
 <body>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="index.html">Accueil</a>
+    <a href="simulateur.html">Simulateur</a>
+    <a href="comprendre.html">Comprendre</a>
+  </nav>
+  <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
+</header>
+
 <div class="wrap">
 
-  <header class="masthead">
-    <div>
-      <p class="eyebrow">Intérêts composés · Effet boule de neige</p>
-      <h1>Ce que vos versements produisent, année après année</h1>
-      <p>Vous versez la même somme chaque mois. Les intérêts, eux, produisent à leur tour des intérêts&nbsp;: c'est là que la courbe décolle. Chaque ligne du tableau montre les intérêts de l'année, le capital atteint et les intérêts composés cumulés depuis le départ.</p>
-    </div>
-    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Changer de thème">Thème</button>
-  </header>
-
-  <section class="panel" aria-labelledby="paramsTitle">
-    <div class="panel-head">
-      <div>
-        <h2 id="paramsTitle">Vos paramètres</h2>
-        <p class="note">Modifiez une valeur et tout se recalcule instantanément.</p>
-      </div>
-      <p class="hint" id="rateHint"></p>
-    </div>
-    <div class="panel-body">
-      <div class="controls">
-        <div class="field">
-          <label for="initial">Capital initial</label>
-          <div class="input-shell">
-            <input type="number" id="initial" min="0" step="100" value="0" inputmode="decimal">
-            <span class="unit">€</span>
-          </div>
-          <span class="hint">Ce que vous placez au départ</span>
-        </div>
-
-        <div class="field">
-          <label for="monthly">Épargne mensuelle</label>
-          <div class="input-shell">
-            <input type="number" id="monthly" min="0" step="10" value="100" inputmode="decimal">
-            <span class="unit">€ / mois</span>
-          </div>
-          <span class="hint" id="monthlyHint"></span>
-        </div>
-
-        <div class="field">
-          <label for="yearly">Épargne annuelle</label>
-          <div class="input-shell">
-            <input type="number" id="yearly" min="0" step="120" value="1200" inputmode="decimal">
-            <span class="unit">€ / an</span>
-          </div>
-          <span class="hint">Équivaut à l'épargne mensuelle × 12</span>
-        </div>
-
-        <div class="field">
-          <label for="rate">Taux d'intérêt annuel</label>
-          <div class="input-shell">
-            <input type="number" id="rate" min="0" max="100" step="0.1" value="8" inputmode="decimal">
-            <span class="unit">%</span>
-          </div>
-          <span class="hint" id="rateMonthHint"></span>
-        </div>
-
-        <div class="field">
-          <label for="years">Durée</label>
-          <div class="input-shell">
-            <input type="number" id="years" min="1" max="70" step="1" value="30" inputmode="numeric">
-            <span class="unit">ans</span>
-          </div>
-          <span class="hint">De 1 à 70 ans</span>
-        </div>
-
-        <div class="field">
-          <label id="modeLabel">Capitalisation</label>
-          <div class="segmented" role="group" aria-labelledby="modeLabel" id="modeGroup">
-            <button type="button" data-mode="monthly" aria-pressed="true">Mensuelle</button>
-            <button type="button" data-mode="annual" aria-pressed="false">Annuelle</button>
-            <button type="button" data-mode="compare" aria-pressed="false">Comparer</button>
-          </div>
-          <span class="hint" id="modeHint"></span>
-        </div>
-      </div>
+  <section class="hero">
+    <p class="eyebrow">Intérêts composés · Effet boule de neige</p>
+    <h1>Vos intérêts finissent par verser plus que vous</h1>
+    <p class="lede">Chaque mois, vous mettez la même somme de côté. Chaque année, les intérêts déjà gagnés produisent à leur tour des intérêts. Au bout d'un moment, cette part que vous n'avez jamais versée dépasse tout votre effort d'épargne. Ce site montre exactement quand, et combien.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="simulateur.html">Ouvrir le simulateur</a>
+      <a class="btn" href="comprendre.html">Comprendre le mécanisme</a>
     </div>
   </section>
 
-  <section class="tiles" id="tiles" aria-label="Synthèse"></section>
-
-  <section class="panel" aria-labelledby="snowTitle">
-    <div class="panel-head">
-      <div>
-        <h2 id="snowTitle">La boule de neige</h2>
-        <p class="note">En bas, l'argent que vous avez sorti de votre poche. Au-dessus, les intérêts composés cumulés — la part que vous n'avez pas versée.</p>
-      </div>
-      <div class="legend">
-        <span><i class="swatch pay"></i>Versements cumulés</span>
-        <span><i class="swatch int"></i>Intérêts composés cumulés</span>
-      </div>
+  <section class="tiles" aria-label="Exemple chiffré">
+    <div class="tile is-hero">
+      <span class="k">100 € par mois · 8 % par an · 30 ans</span>
+      <span class="v">149 036 €</span>
+      <span class="s">capital atteint au bout de 30 ans</span>
     </div>
-    <div class="panel-body">
-      <div class="chart" id="areaChart">
-        <div class="tooltip" id="areaTip" role="status" aria-live="off"></div>
-      </div>
+    <div class="tile">
+      <span class="k"><i class="swatch pay"></i>Sorti de votre poche</span>
+      <span class="v pay">36 000 €</span>
+      <span class="s">100 € × 12 mois × 30 ans</span>
     </div>
-    <p class="readout" id="readout"></p>
-  </section>
-
-  <section class="panel" aria-labelledby="yearTitle">
-    <div class="panel-head">
-      <div>
-        <h2 id="yearTitle">Chaque année&nbsp;: votre effort contre le travail des intérêts</h2>
-        <p class="note">Vos versements restent plats. Les intérêts de l'année, eux, grimpent tout seuls. L'année où la barre dorée dépasse la bleue, votre capital gagne plus que vous n'y mettez.</p>
-      </div>
-      <div class="legend">
-        <span><i class="swatch pay"></i>Versements de l'année</span>
-        <span><i class="swatch int"></i>Intérêts de l'année</span>
-      </div>
+    <div class="tile">
+      <span class="k"><i class="swatch int"></i>Produit par les intérêts</span>
+      <span class="v int">113 036 €</span>
+      <span class="s">75,8 % du capital final</span>
     </div>
-    <div class="panel-body">
-      <div class="chart" id="barChart">
-        <div class="tooltip" id="barTip" role="status" aria-live="off"></div>
-      </div>
+    <div class="tile">
+      <span class="k">Année de bascule</span>
+      <span class="v">An 10</span>
+      <span class="s">les intérêts rapportent alors plus que vos versements</span>
     </div>
   </section>
+  <p class="figure-note">Capitalisation mensuelle, rendement constant, hors frais et fiscalité. Modifiez ces hypothèses dans le simulateur.</p>
 
-  <section class="panel" aria-labelledby="tableTitle">
-    <div class="panel-head">
-      <div>
-        <h2 id="tableTitle">Le détail, année par année</h2>
-        <p class="note" id="tableNote"></p>
-      </div>
+  <section class="cards" aria-label="Ce que le site montre">
+    <div class="card">
+      <h3>Année par année</h3>
+      <p>Un tableau complet : versement de l'année, capital de début, intérêts produits, capital atteint et intérêts composés cumulés depuis le départ.</p>
     </div>
-    <div class="table-scroll">
-      <table id="table">
-        <thead><tr id="thead"></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
+    <div class="card">
+      <h3>L'année de bascule</h3>
+      <p>Le moment où les intérêts d'une seule année dépassent ce que vous y versez. C'est le point où la boule de neige roule toute seule.</p>
+    </div>
+    <div class="card">
+      <h3>Les hypothèses réalistes</h3>
+      <p>Frais de gestion, inflation, impôt à la sortie selon l'enveloppe. Le chiffre brut est joli&nbsp;; le chiffre net est celui qui compte.</p>
+    </div>
+    <div class="card">
+      <h3>L'objectif inversé</h3>
+      <p>Vous savez combien vous voulez atteindre&nbsp;? Le simulateur calcule l'effort mensuel exact pour y arriver.</p>
+    </div>
+  </section>
+
+  <section class="prose">
+    <h2>Le mécanisme en une phrase</h2>
+    <p>Un intérêt <strong>simple</strong> ne porte que sur votre mise de départ. Un intérêt <strong>composé</strong> porte aussi sur les intérêts déjà encaissés — qui produisent alors leurs propres intérêts, et ainsi de suite.</p>
+    <span class="formula">capital fin d'année = capital début × (1 + taux) + épargne de l'année</span>
+    <p class="pull">C'est cette récursion qui crée l'effet boule de neige&nbsp;: la première année ne rapporte presque rien, la trentième rapporte plus que dix années de versements. <a href="comprendre.html">Voir le détail des formules et des hypothèses.</a></p>
+    <div class="cta">
+      <a class="btn btn-primary" href="simulateur.html">Lancer une simulation</a>
     </div>
   </section>
 
   <footer>
-    <p><strong>Comment c'est calculé.</strong> En capitalisation <em>annuelle</em>, les intérêts d'une année portent sur le capital de début d'année&nbsp;: <code>intérêts = capital × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. En capitalisation <em>mensuelle</em>, chaque mois&nbsp;: <code>solde = solde × (1 + taux / 12) + versement</code> — les intérêts du mois entrent immédiatement dans le calcul du mois suivant. Les intérêts composés cumulés d'une année sont l'écart entre le capital atteint et tout ce que vous avez versé depuis le départ.</p>
-    <p>Simulation à taux constant, hors fiscalité, hors frais et hors inflation. Ce n'est pas un conseil en investissement&nbsp;: les rendements réels varient d'une année à l'autre.</p>
+    <p>Simulation à taux constant, fiscalité simplifiée. Ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat et ne constituent pas un conseil en investissement.</p>
   </footer>
 
 </div>
-
-<script src="assets/calc.js"></script>
-<script src="assets/app.js"></script>
 </body>
 </html>
