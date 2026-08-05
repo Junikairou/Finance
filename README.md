@@ -93,6 +93,23 @@ Intérêts composés cumulés d'une année :
 intérêts_cumulés = capital_fin − (capital_initial + épargne_annuelle × n)
 ```
 
+## Emplacements publicitaires
+
+Chaque page réserve trois blocs — haut, milieu, bas :
+
+```html
+<aside class="ad-slot" data-slot="haut" aria-label="Publicité"></aside>
+```
+
+Collez votre code (script de régie, iframe, image) à l'intérieur du bloc voulu.
+Tant qu'un bloc est vide il est masqué et ne prend aucune place : le site reste
+inchangé jusqu'au jour où vous le remplissez. Une bannière plus large que la
+page est ramenée à sa largeur, jamais l'inverse.
+
+Pour voir les emplacements pendant la mise au point, ajoutez la classe
+`ads-preview` sur la balise `<html>` : les blocs vides apparaissent alors en
+pointillés avec leur nom.
+
 ## Structure
 
 ```
