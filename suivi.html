@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suivi réel — Boule de neige</title>
+<meta name="description" content="Saisissez mois par mois vos versements et la valeur de votre portefeuille : rendement réel, moyenne annuelle et écart avec la trajectoire idéale.">
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="index.html">Accueil</a>
+    <a href="simulateur.html">Simulateur</a>
+    <a href="suivi.html">Suivi réel</a>
+    <a href="comprendre.html">Comprendre</a>
+  </nav>
+  <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
+</header>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">Suivi réel</p>
+    <h1>Ce que vous aviez prévu, et ce qui s'est vraiment passé</h1>
+    <p class="lede">Le simulateur suppose un rendement constant. La réalité, elle, monte et descend. Saisissez ici votre historique mois par mois&nbsp;: le suivi en tire votre rendement réel, sa moyenne annuelle, et l'écart avec la trajectoire idéale.</p>
+  </div>
+
+  <section class="panel" aria-labelledby="refTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="refTitle">Votre référence</h2>
+        <p class="note">Le point de départ et le taux que vous visiez. La trajectoire idéale rejoue vos versements réels à ce taux.</p>
+      </div>
+      <p class="hint" id="refHint"></p>
+    </div>
+    <div class="panel-body">
+      <div class="controls">
+        <div class="field">
+          <label for="tInitial">Capital au départ</label>
+          <div class="input-shell">
+            <input type="number" id="tInitial" min="0" step="100" value="0" inputmode="decimal">
+            <span class="unit">€</span>
+          </div>
+          <span class="hint">Ce que vous aviez déjà avant le premier mois saisi</span>
+        </div>
+        <div class="field">
+          <label for="tRate">Taux cible annuel</label>
+          <div class="input-shell">
+            <input type="number" id="tRate" min="0" max="100" step="0.1" value="8" inputmode="decimal">
+            <span class="unit">%</span>
+          </div>
+          <span class="hint" id="tRateHint"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tiles" id="tTiles" aria-label="Synthèse du suivi"></section>
+  <p class="figure-note" id="tTilesNote"></p>
+
+  <section class="panel" aria-labelledby="histTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="histTitle">Votre historique</h2>
+        <p class="note">Une ligne par mois. Remplissez <strong>la valeur du portefeuille</strong> en fin de mois, ou bien <strong>les intérêts perçus</strong>&nbsp;: la colonne manquante se déduit et s'affiche en gris.</p>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn btn-primary" id="tAdd">Ajouter un mois</button>
+        <button type="button" class="btn" id="tExport">Exporter en CSV</button>
+        <button type="button" class="btn" id="tImport">Importer un CSV</button>
+        <button type="button" class="btn" id="tClear">Tout effacer</button>
+        <input type="file" id="tFile" accept=".csv,text/csv" hidden>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table class="table-edit" id="tTable">
+        <thead>
+          <tr>
+            <th scope="col">Mois</th>
+            <th scope="col">Versement</th>
+            <th scope="col">Valeur fin de mois</th>
+            <th scope="col">Intérêts du mois</th>
+            <th scope="col">Capital début</th>
+            <th scope="col">Rendement du mois</th>
+            <th scope="col">Équivalent annuel</th>
+            <th scope="col">Idéal fin de mois</th>
+            <th scope="col">Écart</th>
+            <th scope="col"><span class="sr-only">Supprimer</span></th>
+          </tr>
+        </thead>
+        <tbody id="tBody"></tbody>
+      </table>
+    </div>
+    <p class="readout" id="tEmpty" hidden>Aucun mois saisi pour l'instant. <strong>Ajoutez un mois</strong> pour commencer&nbsp;: un seul chiffre suffit, la valeur de votre portefeuille en fin de mois.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="curveTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="curveTitle">Réel contre idéal</h2>
+        <p class="note">La courbe pleine, c'est votre portefeuille tel qu'il a été. La courbe pointillée, c'est ce qu'il aurait été au taux cible, avec exactement les mêmes versements.</p>
+      </div>
+      <div class="legend">
+        <span><i class="swatch int"></i>Réel</span>
+        <span><i class="swatch pay"></i>Idéal au taux cible</span>
+        <span><i class="swatch mute"></i>Versements cumulés</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="chart" id="tChart">
+        <div class="tooltip" id="tTip" role="status" aria-live="off"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="yearsTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="yearsTitle">Année par année</h2>
+        <p class="note" id="tYearNote">Le rendement de chaque année, votre moyenne, et ce que l'écart a coûté ou rapporté.</p>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="tYearTable">
+        <thead>
+          <tr>
+            <th scope="col">Année</th>
+            <th scope="col">Mois saisis</th>
+            <th scope="col">Versements</th>
+            <th scope="col">Intérêts réels</th>
+            <th scope="col">Intérêts idéaux</th>
+            <th scope="col">Rendement réel</th>
+            <th scope="col">Taux cible</th>
+            <th scope="col">Écart de taux</th>
+            <th scope="col">Capital fin</th>
+            <th scope="col">Écart cumulé</th>
+          </tr>
+        </thead>
+        <tbody id="tYearBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Comment c'est calculé.</strong> Le rendement d'un mois vaut <code>intérêts / (capital début + versement / 2)</code>&nbsp;: les versements sont supposés arrivés en milieu de mois, ils ne comptent donc que pour moitié dans le capital qui a travaillé. La moyenne annuelle est <em>géométrique</em>, <code>(∏ (1 + rendement du mois))^(12 / mois) − 1</code>&nbsp;: elle tient compte de l'effet composé, contrairement à une simple moyenne. La trajectoire idéale rejoue vos versements réels au taux cible avec la même convention, si bien que l'écart ne vient que du rendement&nbsp;; son taux mensuel est le taux équivalent <code>(1 + taux cible)^(1/12) − 1</code>, pour que douze mois chaînés redonnent exactement le taux affiché.</p>
+    <p>Vos données restent dans ce navigateur (stockage local) et ne partent nulle part. Exportez le CSV pour les conserver ailleurs ou changer d'appareil.</p>
+  </footer>
+
+</div>
+
+<script src="assets/track.js"></script>
+<script src="assets/track-ui.js"></script>
+</body>
+</html>

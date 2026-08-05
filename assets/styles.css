@@ -838,3 +838,105 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   border-top: 1px solid var(--rule);
   margin: -1px 0 0 -1px;
 }
+
+/* ------------------------------------------------------------------
+   Suivi réel — tableau de saisie, écarts, agrégats annuels
+   ------------------------------------------------------------------ */
+
+/* Deux couleurs de plus, réservées au signe d'un écart : au-dessus de la
+   trajectoire idéale, ou en dessous. */
+:root { --up: #2f7a55; --down: #b1483c; }
+@media (prefers-color-scheme: dark) { :root { --up: #63b189; --down: #d9796a; } }
+:root[data-theme="dark"] { --up: #63b189; --down: #d9796a; }
+:root[data-theme="light"] { --up: #2f7a55; --down: #b1483c; }
+
+.c-up { color: var(--up); }
+.c-down { color: var(--down); }
+.swatch.mute { background: var(--rule-strong); }
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.toolbar .btn { padding: 8px 12px; font-size: 13.5px; }
+
+.table-edit td { padding: 4px 8px; vertical-align: middle; }
+.table-edit td:first-child { padding-left: 8px; }
+
+.cell-input {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  min-width: 118px;
+}
+.cell-input:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--pay-ghost);
+}
+.cell-input input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 7px 9px;
+  color: var(--ink);
+  font: inherit;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13.5px;
+  text-align: right;
+  outline: none;
+}
+.cell-input input[type="month"] { text-align: left; }
+.cell-input input::-webkit-outer-spin-button,
+.cell-input input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.cell-input input[type="number"] { -moz-appearance: textfield; }
+.cell-input input::placeholder { color: var(--muted); opacity: 1; }
+
+/* La colonne déduite de l'autre : bordure pointillée, chiffre en gris. */
+.cell-input.is-derived {
+  border-style: dashed;
+  background: transparent;
+}
+
+.row-del {
+  border: 1px solid transparent;
+  background: none;
+  color: var(--muted);
+  border-radius: var(--r);
+  width: 26px;
+  height: 26px;
+  line-height: 1;
+  font-size: 17px;
+  cursor: pointer;
+}
+.row-del:hover { color: var(--down); border-color: var(--rule); }
+
+tr.is-empty td.c-open,
+tr.is-empty td.c-rate { color: var(--muted); }
+
+tr.is-partial td:first-child { color: var(--muted); }
+.tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

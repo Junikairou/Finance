@@ -8,6 +8,7 @@ intérêts composés cumulés depuis le départ — l'effet boule de neige.
 | --- | --- |
 | `index.html` | Accueil : le mécanisme en une page, un exemple chiffré |
 | `simulateur.html` | L'outil : paramètres, graphiques, tableau année par année |
+| `suivi.html` | Le suivi réel : historique saisi à la main, rendement constaté, écart |
 | `comprendre.html` | Les formules exactes, les hypothèses et leurs limites |
 
 ## Ouvrir
@@ -42,6 +43,20 @@ Actions**.
   les versements de l'année, repérée sur les deux graphiques et dans le tableau.
 
 Les paramètres sont conservés d'une visite à l'autre.
+
+## Ce que fait le suivi réel
+
+`suivi.html` est un tableau que vous remplissez vous-même, un mois par ligne :
+le versement, puis **soit** la valeur du portefeuille en fin de mois, **soit**
+les intérêts perçus — la colonne manquante se déduit et s'affiche en gris.
+
+- **Le rendement de chaque mois**, méthode de Dietz simplifiée : les versements
+  sont supposés arrivés en milieu de mois.
+- **La moyenne annuelle géométrique**, qui tient compte de l'effet composé.
+- **La trajectoire idéale** : les mêmes versements rejoués au taux cible, d'où
+  l'écart de capital et l'écart de taux, mois par mois et année par année.
+- **Import et export CSV** (`mois;versement;valeur;interets`, décimales à la
+  virgule). Les données restent dans le navigateur, en stockage local.
 
 ## Les formules
 
@@ -81,11 +96,13 @@ intérêts_cumulés = capital_fin − (capital_initial + épargne_annuelle × n)
 ## Structure
 
 ```
-index.html · simulateur.html · comprendre.html
+index.html · simulateur.html · suivi.html · comprendre.html
 assets/styles.css          thème clair et sombre, mise en page
 assets/site.js             navigation et bascule de thème, communes aux pages
 assets/calc.js             moteur de calcul (utilisable aussi sous Node)
 assets/app.js              simulateur : interface, graphiques SVG, tableau
+assets/track.js            moteur du suivi réel (utilisable aussi sous Node)
+assets/track-ui.js         suivi réel : tableau de saisie, synthèse, courbe
 tools/build-artifact.js    génère la page autonome dans dist/
 ```
 
@@ -100,9 +117,26 @@ summarize(r.monthlyC, r.meta, 'exonere').finalCapital; // 149 035,94
 solveMonthly({ initial: 0, target: 200000, rate: 0.08, years: 30 }); // 134,20 €/mois
 ```
 
+`assets/track.js` aussi :
+
+```js
+const { track } = require('./assets/track.js');
+
+track({
+  initial: 1000,
+  targetRate: 0.08,
+  entries: [{ month: '2024-01', contribution: 150, value: 1162.9 }],
+}).summary.average; // rendement annuel moyen constaté
+```
+
 ## Limites
 
-Rendement constant, aucun aléa simulé, versements non indexés, fiscalité
+Le suivi réel ne vaut que ce que vaut la saisie : une valeur de portefeuille
+oubliée fausse le mois concerné et le suivant. Le rendement mensuel suppose les
+versements en milieu de mois, ce qui n'est exact que si vous versez à date fixe
+au milieu du mois.
+
+Côté simulateur : rendement constant, aucun aléa simulé, versements non indexés, fiscalité
 simplifiée (impôt appliqué en une fois sur la totalité des gains en fin de
 période). Ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat
 et ne constituent pas un conseil en investissement.
