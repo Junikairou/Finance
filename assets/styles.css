@@ -566,65 +566,106 @@ body {
 }
 .tooltip .tt-k { display: inline-flex; align-items: center; gap: 6px; }
 
-/* ---------- tableau ---------- */
+/* ---------- relevé année par année ---------- */
 
-.table-scroll {
-  overflow-x: auto;
-  border-top: 1px solid var(--rule);
-  -webkit-overflow-scrolling: touch;
+/* Une liste verticale de « lignes de relevé », pas un tableau large : sur un
+   téléphone, une grille de dix colonnes ne peut se lire qu'en faisant défiler
+   le cadre horizontalement, ce qui ressemble à une page web consultée sur
+   petit écran plutôt qu'à une app. Ici, chaque année est une carte complète,
+   qui nomme explicitement le capital de *début* et de *fin* d'année : c'est
+   la question qu'on se pose en regardant une ligne de calcul composé. */
+
+.ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px var(--pad) var(--pad);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
+.ledger-row {
   background: var(--surface-2);
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ledger-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ledger-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  text-align: right;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rule-strong);
+  color: var(--muted);
+  padding-top: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
-thead th:first-child { text-align: left; }
-
-tbody td {
-  padding: 9px 14px;
+.ledger-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
   text-align: right;
-  border-bottom: 1px solid var(--rule);
-  color: var(--ink-2);
 }
 
-tbody td:first-child {
-  text-align: left;
+.ledger-cap {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ledger-close {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   color: var(--ink);
 }
 
-tbody tr:hover td { background: var(--surface-2); }
+.ledger-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
 
-td.c-int { color: var(--int); }
-td.c-pay { color: var(--pay); }
-td.c-strong { color: var(--ink); }
+.ledger-line b { color: var(--ink); font-weight: 600; }
 
-tr.is-tipping td { background: var(--int-ghost); }
-tr.is-tipping:hover td { background: var(--int-ghost); }
-tr.is-tipping td:first-child::after {
+.ledger-foot {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  margin-top: 3px;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+.c-int { color: var(--int); }
+.c-pay { color: var(--pay); }
+
+.ledger-row.is-tipping { background: var(--int-ghost); }
+.ledger-row.is-tipping .ledger-year::after {
   content: "bascule";
-  margin-left: 8px;
   font-size: 9.5px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--int);
   border: 1px solid currentColor;
@@ -632,7 +673,40 @@ tr.is-tipping td:first-child::after {
   padding: 1px 6px;
 }
 
-tr.is-decade td { border-bottom-color: var(--rule-strong); }
+.ledger-row.is-decade { border: 1px solid var(--rule-strong); }
+
+/* Mode comparaison : les deux méthodes côte à côte dans la même carte,
+   chacune avec son propre début → fin, plutôt que dix colonnes imbriquées. */
+.ledger-compare {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.ledger-col {
+  flex: 1 1 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ledger-col-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ledger-range {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+.ledger-range b { color: var(--ink); font-weight: 600; }
 
 /* ---------- pied ---------- */
 

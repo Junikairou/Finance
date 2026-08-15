@@ -569,65 +569,106 @@ body {
 }
 .tooltip .tt-k { display: inline-flex; align-items: center; gap: 6px; }
 
-/* ---------- tableau ---------- */
+/* ---------- relevé année par année ---------- */
 
-.table-scroll {
-  overflow-x: auto;
-  border-top: 1px solid var(--rule);
-  -webkit-overflow-scrolling: touch;
+/* Une liste verticale de « lignes de relevé », pas un tableau large : sur un
+   téléphone, une grille de dix colonnes ne peut se lire qu'en faisant défiler
+   le cadre horizontalement, ce qui ressemble à une page web consultée sur
+   petit écran plutôt qu'à une app. Ici, chaque année est une carte complète,
+   qui nomme explicitement le capital de *début* et de *fin* d'année : c'est
+   la question qu'on se pose en regardant une ligne de calcul composé. */
+
+.ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px var(--pad) var(--pad);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
+.ledger-row {
   background: var(--surface-2);
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ledger-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ledger-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  text-align: right;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rule-strong);
+  color: var(--muted);
+  padding-top: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
-thead th:first-child { text-align: left; }
-
-tbody td {
-  padding: 9px 14px;
+.ledger-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
   text-align: right;
-  border-bottom: 1px solid var(--rule);
-  color: var(--ink-2);
 }
 
-tbody td:first-child {
-  text-align: left;
+.ledger-cap {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ledger-close {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   color: var(--ink);
 }
 
-tbody tr:hover td { background: var(--surface-2); }
+.ledger-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
 
-td.c-int { color: var(--int); }
-td.c-pay { color: var(--pay); }
-td.c-strong { color: var(--ink); }
+.ledger-line b { color: var(--ink); font-weight: 600; }
 
-tr.is-tipping td { background: var(--int-ghost); }
-tr.is-tipping:hover td { background: var(--int-ghost); }
-tr.is-tipping td:first-child::after {
+.ledger-foot {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  margin-top: 3px;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+
+.c-int { color: var(--int); }
+.c-pay { color: var(--pay); }
+
+.ledger-row.is-tipping { background: var(--int-ghost); }
+.ledger-row.is-tipping .ledger-year::after {
   content: "bascule";
-  margin-left: 8px;
   font-size: 9.5px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--int);
   border: 1px solid currentColor;
@@ -635,7 +676,40 @@ tr.is-tipping td:first-child::after {
   padding: 1px 6px;
 }
 
-tr.is-decade td { border-bottom-color: var(--rule-strong); }
+.ledger-row.is-decade { border: 1px solid var(--rule-strong); }
+
+/* Mode comparaison : les deux méthodes côte à côte dans la même carte,
+   chacune avec son propre début → fin, plutôt que dix colonnes imbriquées. */
+.ledger-compare {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.ledger-col {
+  flex: 1 1 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ledger-col-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ledger-range {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+.ledger-range b { color: var(--ink); font-weight: 600; }
 
 /* ---------- pied ---------- */
 
@@ -1083,12 +1157,7 @@ a:focus-visible, button:focus-visible, select:focus-visible {
         <p class="note" id="tableNote"></p>
       </div>
     </div>
-    <div class="table-scroll">
-      <table id="table">
-        <thead><tr id="thead"></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+    <div class="ledger" id="tbody"></div>
   </section>
 
   <footer>
@@ -1808,51 +1877,52 @@ a:focus-visible, button:focus-visible, select:focus-visible {
       if (year % 10 === 0) c.push('is-decade');
       return c.join(' ');
     };
-    const c = (v, d) => eur2.format(conv(v, d));
+    const c = (v, d) => eur0.format(conv(v, d));
 
     if (mode === 'compare') {
-      $('tableNote').textContent = 'Les deux méthodes de capitalisation côte à côte. À taux égal, capitaliser chaque mois rapporte davantage.' + unitNote;
-      $('thead').innerHTML = ['Année', 'Épargne cumulée', 'Capital début (annuel)', 'Intérêts (annuel)',
-        'Capital fin (annuel)', 'Int. cumulés (annuel)', 'Intérêts (mensuel)', 'Capital fin (mensuel)',
-        'Int. cumulés (mensuel)', 'Écart mensuel − annuel']
-        .map((h) => `<th scope="col">${h}</th>`).join('');
+      $('tableNote').textContent = 'Les deux méthodes, ligne à ligne. Chacune part du même capital de début d\'année ; seule la fréquence à laquelle les intérêts s\'ajoutent au solde change.' + unitNote;
       $('tbody').innerHTML = result.annual.map((a, i) => {
         const m = result.monthlyC[i];
-        return `<tr class="${rowClass(a.year)}">
-          <td>${a.year}</td>
-          <td>${c(a.savedCumul, a.deflator)}</td>
-          <td>${c(a.open, a.deflator)}</td>
-          <td class="c-int">${c(a.interest, a.deflator)}</td>
-          <td class="c-strong">${c(a.close, a.deflator)}</td>
-          <td class="c-int">${c(a.interestCumul, a.deflator)}</td>
-          <td class="c-int">${c(m.interest, m.deflator)}</td>
-          <td class="c-strong">${c(m.close, m.deflator)}</td>
-          <td class="c-int">${c(m.interestCumul, m.deflator)}</td>
-          <td>${c(m.close - a.close, a.deflator)}</td>
-        </tr>`;
+        const ecart = m.close - a.close;
+        return `<div class="ledger-row ${rowClass(a.year)}">
+          <div class="ledger-top"><span class="ledger-year">${a.year === 1 ? 'Année 1' : 'Année ' + a.year}</span></div>
+          <div class="ledger-compare">
+            <div class="ledger-col">
+              <span class="ledger-col-label">Annuelle</span>
+              <span class="ledger-range">Début ${c(a.open, a.deflator)} → fin <b>${c(a.close, a.deflator)}</b></span>
+              <span class="c-int">+${c(a.interest, a.deflator)} intérêts cette année</span>
+            </div>
+            <div class="ledger-col">
+              <span class="ledger-col-label">Mensuelle</span>
+              <span class="ledger-range">Début ${c(m.open, m.deflator)} → fin <b>${c(m.close, m.deflator)}</b></span>
+              <span class="c-int">+${c(m.interest, m.deflator)} intérêts cette année</span>
+            </div>
+          </div>
+          <div class="ledger-foot">Écart mensuel − annuel : <span class="c-int">+${c(ecart, a.deflator)}</span> · épargne cumulée ${c(a.savedCumul, a.deflator)}</div>
+        </div>`;
       }).join('');
       return;
     }
 
     $('tableNote').textContent = (mode === 'monthly'
-      ? 'Capitalisation mensuelle : les intérêts du mois s\'ajoutent au solde et produisent à leur tour dès le mois suivant.'
-      : 'Capitalisation annuelle : les intérêts d\'une année portent sur le capital présent en début d\'année.') + unitNote;
+      ? 'Capitalisation mensuelle : chaque ligne montre le capital de début et de fin d\'année ; entre les deux, les intérêts du mois s\'ajoutent au solde et produisent à leur tour dès le mois suivant.'
+      : 'Capitalisation annuelle : les intérêts de l\'année portent sur le capital de début d\'année ; le versement et les intérêts s\'ajoutent une seule fois, en fin d\'année.') + unitNote;
 
-    $('thead').innerHTML = ['Année', 'Versement de l\'année', 'Capital début d\'année', 'Capital + épargne',
-      'Intérêts de l\'année', 'Capital fin d\'année', 'Total versé', 'Intérêts composés cumulés', 'Part des intérêts']
-      .map((h) => `<th scope="col">${h}</th>`).join('');
-
-    $('tbody').innerHTML = rows.map((r) => `<tr class="${rowClass(r.year)}">
-        <td>${r.year}</td>
-        <td class="c-pay">${c(r.contribution, r.deflator)}</td>
-        <td>${c(r.open, r.deflator)}</td>
-        <td>${c(r.base, r.deflator)}</td>
-        <td class="c-int">${c(r.interest, r.deflator)}</td>
-        <td class="c-strong">${c(r.close, r.deflator)}</td>
-        <td class="c-pay">${c(r.paidIn, r.deflator)}</td>
-        <td class="c-int">${c(r.interestCumul, r.deflator)}</td>
-        <td>${pct1.format(r.close > 0 ? r.interestCumul / r.close : 0)}</td>
-      </tr>`).join('');
+    $('tbody').innerHTML = rows.map((r) => `<div class="ledger-row ${rowClass(r.year)}">
+        <div class="ledger-top">
+          <span class="ledger-year">${r.year === 1 ? 'Année 1' : 'Année ' + r.year}</span>
+          <span class="ledger-headline">
+            <span class="ledger-cap">Capital fin d'année</span>
+            <span class="ledger-close">${c(r.close, r.deflator)}</span>
+          </span>
+        </div>
+        <div class="ledger-line">Capital début d'année <b>${c(r.open, r.deflator)}</b></div>
+        <div class="ledger-line">
+          <span class="c-pay">Versé +${c(r.contribution, r.deflator)}</span>
+          <span class="c-int">Intérêts +${c(r.interest, r.deflator)}</span>
+        </div>
+        <div class="ledger-foot">Depuis le départ : ${c(r.paidIn, r.deflator)} versés, ${c(r.interestCumul, r.deflator)} d'intérêts cumulés (${pct1.format(r.close > 0 ? r.interestCumul / r.close : 0)} du capital)</div>
+      </div>`).join('');
   }
 
   /* ---------- câblage ---------- */

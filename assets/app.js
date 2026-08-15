@@ -484,51 +484,52 @@
       if (year % 10 === 0) c.push('is-decade');
       return c.join(' ');
     };
-    const c = (v, d) => eur2.format(conv(v, d));
+    const c = (v, d) => eur0.format(conv(v, d));
 
     if (mode === 'compare') {
-      $('tableNote').textContent = 'Les deux méthodes de capitalisation côte à côte. À taux égal, capitaliser chaque mois rapporte davantage.' + unitNote;
-      $('thead').innerHTML = ['Année', 'Épargne cumulée', 'Capital début (annuel)', 'Intérêts (annuel)',
-        'Capital fin (annuel)', 'Int. cumulés (annuel)', 'Intérêts (mensuel)', 'Capital fin (mensuel)',
-        'Int. cumulés (mensuel)', 'Écart mensuel − annuel']
-        .map((h) => `<th scope="col">${h}</th>`).join('');
+      $('tableNote').textContent = 'Les deux méthodes, ligne à ligne. Chacune part du même capital de début d\'année ; seule la fréquence à laquelle les intérêts s\'ajoutent au solde change.' + unitNote;
       $('tbody').innerHTML = result.annual.map((a, i) => {
         const m = result.monthlyC[i];
-        return `<tr class="${rowClass(a.year)}">
-          <td>${a.year}</td>
-          <td>${c(a.savedCumul, a.deflator)}</td>
-          <td>${c(a.open, a.deflator)}</td>
-          <td class="c-int">${c(a.interest, a.deflator)}</td>
-          <td class="c-strong">${c(a.close, a.deflator)}</td>
-          <td class="c-int">${c(a.interestCumul, a.deflator)}</td>
-          <td class="c-int">${c(m.interest, m.deflator)}</td>
-          <td class="c-strong">${c(m.close, m.deflator)}</td>
-          <td class="c-int">${c(m.interestCumul, m.deflator)}</td>
-          <td>${c(m.close - a.close, a.deflator)}</td>
-        </tr>`;
+        const ecart = m.close - a.close;
+        return `<div class="ledger-row ${rowClass(a.year)}">
+          <div class="ledger-top"><span class="ledger-year">${a.year === 1 ? 'Année 1' : 'Année ' + a.year}</span></div>
+          <div class="ledger-compare">
+            <div class="ledger-col">
+              <span class="ledger-col-label">Annuelle</span>
+              <span class="ledger-range">Début ${c(a.open, a.deflator)} → fin <b>${c(a.close, a.deflator)}</b></span>
+              <span class="c-int">+${c(a.interest, a.deflator)} intérêts cette année</span>
+            </div>
+            <div class="ledger-col">
+              <span class="ledger-col-label">Mensuelle</span>
+              <span class="ledger-range">Début ${c(m.open, m.deflator)} → fin <b>${c(m.close, m.deflator)}</b></span>
+              <span class="c-int">+${c(m.interest, m.deflator)} intérêts cette année</span>
+            </div>
+          </div>
+          <div class="ledger-foot">Écart mensuel − annuel : <span class="c-int">+${c(ecart, a.deflator)}</span> · épargne cumulée ${c(a.savedCumul, a.deflator)}</div>
+        </div>`;
       }).join('');
       return;
     }
 
     $('tableNote').textContent = (mode === 'monthly'
-      ? 'Capitalisation mensuelle : les intérêts du mois s\'ajoutent au solde et produisent à leur tour dès le mois suivant.'
-      : 'Capitalisation annuelle : les intérêts d\'une année portent sur le capital présent en début d\'année.') + unitNote;
+      ? 'Capitalisation mensuelle : chaque ligne montre le capital de début et de fin d\'année ; entre les deux, les intérêts du mois s\'ajoutent au solde et produisent à leur tour dès le mois suivant.'
+      : 'Capitalisation annuelle : les intérêts de l\'année portent sur le capital de début d\'année ; le versement et les intérêts s\'ajoutent une seule fois, en fin d\'année.') + unitNote;
 
-    $('thead').innerHTML = ['Année', 'Versement de l\'année', 'Capital début d\'année', 'Capital + épargne',
-      'Intérêts de l\'année', 'Capital fin d\'année', 'Total versé', 'Intérêts composés cumulés', 'Part des intérêts']
-      .map((h) => `<th scope="col">${h}</th>`).join('');
-
-    $('tbody').innerHTML = rows.map((r) => `<tr class="${rowClass(r.year)}">
-        <td>${r.year}</td>
-        <td class="c-pay">${c(r.contribution, r.deflator)}</td>
-        <td>${c(r.open, r.deflator)}</td>
-        <td>${c(r.base, r.deflator)}</td>
-        <td class="c-int">${c(r.interest, r.deflator)}</td>
-        <td class="c-strong">${c(r.close, r.deflator)}</td>
-        <td class="c-pay">${c(r.paidIn, r.deflator)}</td>
-        <td class="c-int">${c(r.interestCumul, r.deflator)}</td>
-        <td>${pct1.format(r.close > 0 ? r.interestCumul / r.close : 0)}</td>
-      </tr>`).join('');
+    $('tbody').innerHTML = rows.map((r) => `<div class="ledger-row ${rowClass(r.year)}">
+        <div class="ledger-top">
+          <span class="ledger-year">${r.year === 1 ? 'Année 1' : 'Année ' + r.year}</span>
+          <span class="ledger-headline">
+            <span class="ledger-cap">Capital fin d'année</span>
+            <span class="ledger-close">${c(r.close, r.deflator)}</span>
+          </span>
+        </div>
+        <div class="ledger-line">Capital début d'année <b>${c(r.open, r.deflator)}</b></div>
+        <div class="ledger-line">
+          <span class="c-pay">Versé +${c(r.contribution, r.deflator)}</span>
+          <span class="c-int">Intérêts +${c(r.interest, r.deflator)}</span>
+        </div>
+        <div class="ledger-foot">Depuis le départ : ${c(r.paidIn, r.deflator)} versés, ${c(r.interestCumul, r.deflator)} d'intérêts cumulés (${pct1.format(r.close > 0 ? r.interestCumul / r.close : 0)} du capital)</div>
+      </div>`).join('');
   }
 
   /* ---------- câblage ---------- */
