@@ -21,7 +21,14 @@
   function wire() {
     const btn = document.getElementById('themeToggle');
     if (btn) {
-      const sync = () => { btn.textContent = current() === 'dark' ? 'Thème clair' : 'Thème sombre'; };
+      const sync = () => {
+        const label = current() === 'dark' ? 'Thème clair' : 'Thème sombre';
+        btn.textContent = label;
+        /* Sur écran étroit, le CSS n'affiche que ce symbole à la place du
+           libellé ; l'aria-label garde la phrase pour les lecteurs d'écran. */
+        btn.dataset.symbole = current() === 'dark' ? '☀' : '☾';
+        btn.setAttribute('aria-label', label);
+      };
       btn.addEventListener('click', () => {
         const next = current() === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);

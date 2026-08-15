@@ -595,6 +595,20 @@ footer code {
 .nav a:hover { color: var(--ink); }
 .nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--int); }
 
+/* Sur un téléphone, la barre ne tient pas : le nom de la marque et le libellé
+   du bouton laissent la place aux trois liens, qui doivent rester visibles
+   sans avoir à faire défiler la barre. Le bouton devient un symbole, et
+   garde son libellé complet pour les lecteurs d'écran (aria-label). */
+@media (max-width: 560px) {
+  .topbar { gap: 12px; padding: 0 14px; }
+  .brand-nom { display: none; }
+  .brand-mark { font-size: 19px; }
+  .nav { gap: 14px; }
+  .nav a { font-size: 11px; letter-spacing: 0.05em; }
+  .theme-toggle { padding: 8px 10px; font-size: 0; }
+  .theme-toggle::before { content: attr(data-symbole); font-size: 15px; line-height: 1; }
+}
+
 a:focus-visible, button:focus-visible, select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

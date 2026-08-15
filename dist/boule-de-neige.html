@@ -598,6 +598,20 @@ footer code {
 .nav a:hover { color: var(--ink); }
 .nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--int); }
 
+/* Sur un téléphone, la barre ne tient pas : le nom de la marque et le libellé
+   du bouton laissent la place aux trois liens, qui doivent rester visibles
+   sans avoir à faire défiler la barre. Le bouton devient un symbole, et
+   garde son libellé complet pour les lecteurs d'écran (aria-label). */
+@media (max-width: 560px) {
+  .topbar { gap: 12px; padding: 0 14px; }
+  .brand-nom { display: none; }
+  .brand-mark { font-size: 19px; }
+  .nav { gap: 14px; }
+  .nav a { font-size: 11px; letter-spacing: 0.05em; }
+  .theme-toggle { padding: 8px 10px; font-size: 0; }
+  .theme-toggle::before { content: attr(data-symbole); font-size: 15px; line-height: 1; }
+}
+
 a:focus-visible, button:focus-visible, select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -845,7 +859,7 @@ a:focus-visible, button:focus-visible, select:focus-visible {
 </style>
 
 <header class="topbar">
-  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span><span class="brand-nom">Boule de neige</span></a>
   
   <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
 </header>
@@ -1071,7 +1085,14 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   function wire() {
     const btn = document.getElementById('themeToggle');
     if (btn) {
-      const sync = () => { btn.textContent = current() === 'dark' ? 'Thème clair' : 'Thème sombre'; };
+      const sync = () => {
+        const label = current() === 'dark' ? 'Thème clair' : 'Thème sombre';
+        btn.textContent = label;
+        /* Sur écran étroit, le CSS n'affiche que ce symbole à la place du
+           libellé ; l'aria-label garde la phrase pour les lecteurs d'écran. */
+        btn.dataset.symbole = current() === 'dark' ? '☀' : '☾';
+        btn.setAttribute('aria-label', label);
+      };
       btn.addEventListener('click', () => {
         const next = current() === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
@@ -1313,6 +1334,16 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     for (let y = step; y <= n; y += step) out.push(y);
     if (out[out.length - 1] !== n) out.push(n);
     return out;
+  }
+
+  /* Place le libellé d'un repère vertical sans qu'il sorte du cadre : à droite
+     du trait tant qu'il y a la place, à gauche sinon. La largeur du texte est
+     estimée d'après la police à chasse fixe des graphiques (10,5 px), ce qui
+     évite de devoir mesurer un élément pas encore inséré dans la page. */
+  function labelRepere(texte, bx, gauche, droite) {
+    const large = texte.length * 6.3;
+    if (bx + 5 + large <= droite) return { x: bx + 5, anchor: 'start' };
+    return { x: Math.max(gauche + large, bx - 5), anchor: 'end' };
   }
 
   /* ---------- état ---------- */
@@ -1563,8 +1594,10 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     if (sum.tippingYear) {
       const bx = x(sum.tippingYear);
       svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
-      const lbl = sv('text', { x: bx + 5, y: pad.t - 10 }, { fill: 'var(--int)' });
-      lbl.textContent = 'bascule · an ' + sum.tippingYear;
+      const texte = 'bascule · an ' + sum.tippingYear;
+      const pos = labelRepere(texte, bx, pad.l, W - pad.r);
+      const lbl = sv('text', { x: pos.x, y: pad.t - 10, 'text-anchor': pos.anchor }, { fill: 'var(--int)' });
+      lbl.textContent = texte;
       svg.appendChild(lbl);
     }
 
@@ -1672,9 +1705,12 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     if (sum.tippingYear) {
       const bx = gx(sum.tippingYear - 1);
       svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
-      const anchor = bx > pad.l + pw * 0.72 ? 'end' : 'start';
-      const lbl = sv('text', { x: bx + (anchor === 'end' ? -5 : 5), y: pad.t - 10, 'text-anchor': anchor }, { fill: 'var(--int)' });
-      lbl.textContent = 'les intérêts dépassent vos versements · an ' + sum.tippingYear;
+      // Phrase raccourcie sur un graphique étroit (téléphone) : en entier, elle
+      // est plus large que le cadre, quel que soit le côté où on la pose.
+      const texte = (pw < 340 ? 'intérêts > versements · an ' : 'les intérêts dépassent vos versements · an ') + sum.tippingYear;
+      const pos = labelRepere(texte, bx, pad.l, W - pad.r);
+      const lbl = sv('text', { x: pos.x, y: pad.t - 10, 'text-anchor': pos.anchor }, { fill: 'var(--int)' });
+      lbl.textContent = texte;
       svg.appendChild(lbl);
     }
 

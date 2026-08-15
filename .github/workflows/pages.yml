@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir -p _site/assets _site/dist
           cp index.html simulateur.html comprendre.html .nojekyll _site/
-          cp assets/styles.css assets/site.js assets/calc.js assets/app.js _site/assets/
+          cp assets/styles.css assets/site.js assets/calc.js assets/app.js assets/favicon.svg _site/assets/
           cp dist/boule-de-neige.html _site/dist/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

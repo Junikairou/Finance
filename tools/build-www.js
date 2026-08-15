@@ -18,7 +18,7 @@ const root = path.resolve(__dirname, '..');
 const out = path.join(root, 'www');
 
 const PAGES = ['index.html', 'simulateur.html', 'comprendre.html'];
-const ASSETS = ['styles.css', 'site.js', 'calc.js', 'app.js', 'natif.js'];
+const ASSETS = ['styles.css', 'site.js', 'calc.js', 'app.js', 'natif.js', 'favicon.svg'];
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(path.join(out, 'assets'), { recursive: true });

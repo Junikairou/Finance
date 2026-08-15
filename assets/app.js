@@ -64,6 +64,16 @@
     return out;
   }
 
+  /* Place le libellé d'un repère vertical sans qu'il sorte du cadre : à droite
+     du trait tant qu'il y a la place, à gauche sinon. La largeur du texte est
+     estimée d'après la police à chasse fixe des graphiques (10,5 px), ce qui
+     évite de devoir mesurer un élément pas encore inséré dans la page. */
+  function labelRepere(texte, bx, gauche, droite) {
+    const large = texte.length * 6.3;
+    if (bx + 5 + large <= droite) return { x: bx + 5, anchor: 'start' };
+    return { x: Math.max(gauche + large, bx - 5), anchor: 'end' };
+  }
+
   /* ---------- état ---------- */
 
   const num = (el, min, max) => Math.min(max, Math.max(min, +el.value || 0));
@@ -312,8 +322,10 @@
     if (sum.tippingYear) {
       const bx = x(sum.tippingYear);
       svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
-      const lbl = sv('text', { x: bx + 5, y: pad.t - 10 }, { fill: 'var(--int)' });
-      lbl.textContent = 'bascule · an ' + sum.tippingYear;
+      const texte = 'bascule · an ' + sum.tippingYear;
+      const pos = labelRepere(texte, bx, pad.l, W - pad.r);
+      const lbl = sv('text', { x: pos.x, y: pad.t - 10, 'text-anchor': pos.anchor }, { fill: 'var(--int)' });
+      lbl.textContent = texte;
       svg.appendChild(lbl);
     }
 
@@ -421,9 +433,12 @@
     if (sum.tippingYear) {
       const bx = gx(sum.tippingYear - 1);
       svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
-      const anchor = bx > pad.l + pw * 0.72 ? 'end' : 'start';
-      const lbl = sv('text', { x: bx + (anchor === 'end' ? -5 : 5), y: pad.t - 10, 'text-anchor': anchor }, { fill: 'var(--int)' });
-      lbl.textContent = 'les intérêts dépassent vos versements · an ' + sum.tippingYear;
+      // Phrase raccourcie sur un graphique étroit (téléphone) : en entier, elle
+      // est plus large que le cadre, quel que soit le côté où on la pose.
+      const texte = (pw < 340 ? 'intérêts > versements · an ' : 'les intérêts dépassent vos versements · an ') + sum.tippingYear;
+      const pos = labelRepere(texte, bx, pad.l, W - pad.r);
+      const lbl = sv('text', { x: pos.x, y: pad.t - 10, 'text-anchor': pos.anchor }, { fill: 'var(--int)' });
+      lbl.textContent = texte;
       svg.appendChild(lbl);
     }
 

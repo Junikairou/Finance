@@ -177,7 +177,7 @@ const pages = ['index.html', 'simulateur.html', 'comprendre.html'];
 
 check('les trois pages et leurs ressources sont copiées', () => {
   for (const p of pages) assert(fs.existsSync(path.join(www, p)), `www/${p} manquant`);
-  for (const a of ['styles.css', 'site.js', 'calc.js', 'app.js', 'natif.js']) {
+  for (const a of ['styles.css', 'site.js', 'calc.js', 'app.js', 'natif.js', 'favicon.svg']) {
     assert(fs.existsSync(path.join(www, 'assets', a)), `www/assets/${a} manquant`);
   }
 });
