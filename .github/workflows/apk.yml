@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Installer les dépendances
         run: npm ci
@@ -54,12 +54,14 @@ jobs:
         run: |
           set -e
           APK=android/app/build/outputs/apk/debug/app-debug.apk
-          EMPREINTE=$(keytool -printcert -jarfile "$APK" | grep -m1 'SHA256:' | tr -d ' ')
-          ATTENDUE=$(keytool -list -keystore android/app/boule-debug.keystore -storepass android \
-            | grep -m1 'SHA-256:' | sed 's/.*SHA-256: */SHA256:/' | tr -d ' ')
-          echo "APK       $EMPREINTE"
+          # keytool écrit « SHA256: » pour un APK et « (SHA-256): » pour un
+          # magasin de clés : on ne compare donc que les 32 octets eux-mêmes.
+          empreinte() { grep -oiE '([0-9a-f]{2}:){31}[0-9a-f]{2}' | head -1 | tr 'a-f' 'A-F'; }
+          DANS_APK=$(keytool -printcert -jarfile "$APK" | empreinte)
+          ATTENDUE=$(keytool -list -keystore android/app/boule-debug.keystore -storepass android | empreinte)
+          echo "APK       $DANS_APK"
           echo "keystore  $ATTENDUE"
-          test "$EMPREINTE" = "$ATTENDUE"
+          test -n "$DANS_APK" && test "$DANS_APK" = "$ATTENDUE"
 
       - name: Renommer l'APK
         run: |
