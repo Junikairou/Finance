@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Boule de neige</string>
+    <string name="title_activity_main">Boule de neige</string>
+    <string name="package_name">com.junikairou.bouledeneige</string>
+    <string name="custom_url_scheme">com.junikairou.bouledeneige</string>
+</resources>

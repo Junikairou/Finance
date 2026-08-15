@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comprendre les intérêts composés — Boule de neige</title>
 <meta name="description" content="Les formules exactes derrière l'effet boule de neige : capitalisation mensuelle et annuelle, frais de gestion, inflation, fiscalité, et ce que le simulateur ne dit pas.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/styles.css">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
@@ -20,7 +21,7 @@
 <body>
 
 <header class="topbar">
-  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span><span class="brand-nom">Boule de neige</span></a>
   <nav class="nav" aria-label="Navigation principale">
     <a href="index.html">Accueil</a>
     <a href="simulateur.html">Simulateur</a>
@@ -77,12 +78,12 @@ capital fin d'année  = capital début + épargne de l'année + intérêts de l'
     <h3>Les frais de gestion</h3>
     <p>Prélevés chaque année sur l'encours — pas sur les gains, sur <em>tout</em> le capital. Un fonds à 1,5 % de frais transforme un rendement brut de 8 % en 6,5 % net. Le simulateur applique cette soustraction à chaque période&nbsp;:</p>
     <span class="formula">taux net = taux brut − frais de gestion</span>
-    <p class="pull">Sur 30 ans à 100 € par mois, passer de 0 % à 1,5 % de frais coûte <strong>38 418 €</strong> de capital final. Les frais sont la variable la plus sous-estimée de l'épargne longue.</p>
+    <p class="pull">Sur 30 ans à 100 € par mois, passer de 0 % à 1,5 % de frais coûte <strong>34 152 €</strong> de capital final. Les frais sont la variable la plus sous-estimée de l'épargne longue.</p>
 
     <h3>L'inflation</h3>
     <p>Elle ne change aucun montant&nbsp;: elle change ce qu'ils achètent. Le simulateur convertit les euros futurs en euros d'aujourd'hui avec un déflateur&nbsp;:</p>
     <span class="formula">valeur en euros d'aujourd'hui = montant / (1 + inflation)^n</span>
-    <p>À 2 % d'inflation, 149 036 € dans 30 ans achètent ce que 82 278 € achètent aujourd'hui. Le bouton <strong>Euros d'aujourd'hui</strong> bascule tous les affichages, graphiques compris.</p>
+    <p>À 2 % d'inflation, 140 855 € dans 30 ans achètent ce que 77 762 € achètent aujourd'hui. Le bouton <strong>Euros d'aujourd'hui</strong> bascule tous les affichages, graphiques compris.</p>
 
     <h3>L'impôt</h3>
     <p>Calculé à la sortie, sur les gains uniquement&nbsp;:</p>

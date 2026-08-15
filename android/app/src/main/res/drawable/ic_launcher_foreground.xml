@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Flocon de l'icone : six branches identiques, la meme forme tournee six fois.
+     Dessine en vectoriel plutot qu'en PNG pour rester net a toutes les densites.
+     Le motif tient dans le carre central de 72dp, la zone sure d'une icone
+     adaptative : Android rogne les bords selon la forme choisie par le
+     lanceur. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group android:pivotX="54" android:pivotY="54" android:rotation="0">
+        <path
+            android:pathData="M54,54 L54,22 M54,33 L46.5,25.5 M54,33 L61.5,25.5 M54,43 L48.5,37.5 M54,43 L59.5,37.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="60">
+        <path
+            android:pathData="M54,54 L54,22 M54,33 L46.5,25.5 M54,33 L61.5,25.5 M54,43 L48.5,37.5 M54,43 L59.5,37.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="120">
+        <path
+            android:pathData="M54,54 L54,22 M54,33 L46.5,25.5 M54,33 L61.5,25.5 M54,43 L48.5,37.5 M54,43 L59.5,37.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="180">
+        <path
+            android:pathData="M54,54 L54,22 M54,33 L46.5,25.5 M54,33 L61.5,25.5 M54,43 L48.5,37.5 M54,43 L59.5,37.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="240">
+        <path
+            android:pathData="M54,54 L54,22 M54,33 L46.5,25.5 M54,33 L61.5,25.5 M54,43 L48.5,37.5 M54,43 L59.5,37.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="300">
+        <path
+            android:pathData="M54,54 L54,22 M54,33 L46.5,25.5 M54,33 L61.5,25.5 M54,43 L48.5,37.5 M54,43 L59.5,37.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.4"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

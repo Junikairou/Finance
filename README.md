@@ -22,28 +22,32 @@ intégrés) :
 node tools/build-artifact.js   # → dist/boule-de-neige.html
 ```
 
+## Sur Android
+
+Le même site est empaqueté en application (Capacitor) : pages, CSS et JavaScript
+embarqués dans l'APK, donc utilisable sans réseau.
+
+**Télécharger depuis le téléphone** :
+[boule-de-neige.apk](https://github.com/Junikairou/Finance/releases/download/apk/boule-de-neige.apk)
+— l'adresse ne change pas d'une version à l'autre.
+
+Tout est dans **[ANDROID.md](ANDROID.md)** : installation, compilation
+(`.github/workflows/apk.yml`, sur GitHub, sans rien installer), et les pièges à
+connaître.
+
 ## Publication
 
 `.github/workflows/pages.yml` déploie le site sur GitHub Pages à chaque push sur
 `main`. Il faut l'activer une fois : **Settings → Pages → Source : GitHub
 Actions**.
 
-## Installer comme application (PWA) et obtenir un APK
+## Installer comme PWA (sans passer par l'APK)
 
-Le site est une PWA installable (`manifest.webmanifest` + `sw.js`) : une fois
-publié sur GitHub Pages, Chrome sur Android propose « Installer l'application »
-— icône sur l'écran d'accueil, plein écran, fonctionne hors-ligne.
-
-Pour un fichier `.apk` réel (installable sans passer par Chrome) :
-
-1. Publiez le site (voir *Publication* ci-dessus) — url du type
-   `https://<compte>.github.io/Finance/`.
-2. Allez sur [pwabuilder.com](https://www.pwabuilder.com), collez cette URL,
-   cliquez **Package for stores → Android**. PWABuilder lit le manifest et
-   génère un APK signé (Trusted Web Activity) prêt à installer.
-
-Aucun outil Android (SDK, Bubblewrap) n'est nécessaire côté dépôt ; le site
-n'embarque que le manifest et le service worker qui rendent ça possible.
+Le site est aussi une PWA installable (`manifest.webmanifest` + `sw.js`) : une
+fois publié sur GitHub Pages, Chrome sur Android (ou Safari sur iOS) propose
+« Installer l'application » / « Sur l'écran d'accueil » — icône, plein écran,
+fonctionne hors-ligne. Pratique si l'APK n'est pas une option (dépôt privé
+sans compte GitHub sur le téléphone, iOS, etc.).
 
 ## Ce que fait le simulateur
 
@@ -104,7 +108,11 @@ assets/styles.css          thème clair et sombre, mise en page
 assets/site.js             navigation et bascule de thème, communes aux pages
 assets/calc.js             moteur de calcul (utilisable aussi sous Node)
 assets/app.js              simulateur : interface, graphiques SVG, tableau
+assets/natif.js            application Android seulement : bouton retour
 tools/build-artifact.js    génère la page autonome dans dist/
+tools/build-www.js         prépare www/, le contenu embarqué dans l'APK
+tests/run.js               npm test : ressources Android, www/, calculs
+android/                   projet Android (Capacitor) — voir ANDROID.md
 ```
 
 `assets/calc.js` s'utilise seul :
@@ -113,9 +121,9 @@ tools/build-artifact.js    génère la page autonome dans dist/
 const { project, summarize, solveMonthly } = require('./assets/calc.js');
 
 const r = project({ initial: 0, monthly: 100, rate: 0.08, years: 30 });
-summarize(r.monthlyC, r.meta, 'exonere').finalCapital; // 149 035,94
+summarize(r.monthlyC, r.meta, 'exonere').finalCapital; // 140 855,06
 
-solveMonthly({ initial: 0, target: 200000, rate: 0.08, years: 30 }); // 134,20 €/mois
+solveMonthly({ initial: 0, target: 200000, rate: 0.08, years: 30 }); // 141,99 €/mois
 ```
 
 ## Limites

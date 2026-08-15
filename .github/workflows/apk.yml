@@ -1,0 +1,97 @@
+name: APK
+
+on:
+  push:
+    # Les branches de travail compilent aussi : « Run workflow » n'est proposé
+    # que pour les workflows présents sur la branche par défaut, or l'APK doit
+    # pouvoir être essayé avant la fusion dans main.
+    branches: [main, 'claude/**']
+    # Un commit qui ne touche qu'à la documentation ne change pas l'APK.
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+# La publication de la Release écrit dans le dépôt.
+permissions:
+  contents: write
+
+concurrency:
+  group: apk
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Vérifications
+        run: npm test
+
+      # Gradle 8.11 refuse les JDK plus récents que 21.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Compléter le SDK Android si besoin
+        run: yes | sdkmanager "platforms;android-35" "build-tools;35.0.0" > /dev/null || true
+
+      - name: Préparer le contenu embarqué
+        run: npm run sync
+
+      - name: Compiler l'APK de débogage
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+
+      # Sans cette vérification, une clé de débogage générée au hasard passerait
+      # inaperçue ici et échouerait sur le téléphone, à l'installation.
+      - name: Vérifier la signature
+        run: |
+          set -e
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          # keytool écrit « SHA256: » pour un APK et « (SHA-256): » pour un
+          # magasin de clés : on ne compare donc que les 32 octets eux-mêmes.
+          empreinte() { grep -oiE '([0-9a-f]{2}:){31}[0-9a-f]{2}' | head -1 | tr 'a-f' 'A-F'; }
+          DANS_APK=$(keytool -printcert -jarfile "$APK" | empreinte)
+          ATTENDUE=$(keytool -list -keystore android/app/boule-debug.keystore -storepass android | empreinte)
+          echo "APK       $DANS_APK"
+          echo "keystore  $ATTENDUE"
+          test -n "$DANS_APK" && test "$DANS_APK" = "$ATTENDUE"
+
+      - name: Renommer l'APK
+        run: |
+          mkdir -p sortie
+          cp android/app/build/outputs/apk/debug/app-debug.apk sortie/boule-de-neige.apk
+          ls -lh sortie/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: boule-de-neige-apk
+          path: sortie/boule-de-neige.apk
+
+      # Toujours le même tag « apk » : l'adresse de téléchargement ne change jamais.
+      - name: Publier dans les Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          VERSION=$(node -p "require('./package.json').version")
+          git log -1 --pretty=%b > notes.md
+          {
+            echo
+            echo "Version $VERSION, compilée le $(date -u '+%d/%m/%Y à %H:%M UTC')"
+            echo "depuis ${GITHUB_REF_NAME} (${GITHUB_SHA::7})."
+          } >> notes.md
+          cat .github/notes-apk.md >> notes.md
+          gh release delete apk --yes --cleanup-tag || true
+          gh release create apk sortie/boule-de-neige.apk \
+            --target "$GITHUB_SHA" \
+            --title "Boule de neige $VERSION" \
+            --notes-file notes.md

@@ -896,7 +896,7 @@ a:focus-visible, button:focus-visible, select:focus-visible {
 </style>
 
 <header class="topbar">
-  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span>Boule de neige</a>
+  <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">❄</span><span class="brand-nom">Boule de neige</span></a>
   
   <button type="button" class="theme-toggle" id="themeToggle">Thème</button>
 </header>
@@ -1152,7 +1152,10 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
   else wire();
 
-  if ('serviceWorker' in navigator) {
+  /* Dans l'APK (natif.js pose data-natif avant ce script), sw.js n'est pas
+     embarqué : Capacitor sert déjà l'appli hors-ligne, inutile de l'enregistrer
+     et une tentative ne ferait que 404 dans la console à chaque page. */
+  if ('serviceWorker' in navigator && !root.hasAttribute('data-natif')) {
     window.addEventListener('load', () => {
       const base = location.pathname.replace(/[^/]*$/, '');
       navigator.serviceWorker.register(base + 'sw.js').catch(() => { /* PWA indisponible */ });
@@ -1383,6 +1386,16 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     for (let y = step; y <= n; y += step) out.push(y);
     if (out[out.length - 1] !== n) out.push(n);
     return out;
+  }
+
+  /* Place le libellé d'un repère vertical sans qu'il sorte du cadre : à droite
+     du trait tant qu'il y a la place, à gauche sinon. La largeur du texte est
+     estimée d'après la police à chasse fixe des graphiques (10,5 px), ce qui
+     évite de devoir mesurer un élément pas encore inséré dans la page. */
+  function labelRepere(texte, bx, gauche, droite) {
+    const large = texte.length * 6.3;
+    if (bx + 5 + large <= droite) return { x: bx + 5, anchor: 'start' };
+    return { x: Math.max(gauche + large, bx - 5), anchor: 'end' };
   }
 
   /* ---------- état ---------- */
@@ -1633,8 +1646,10 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     if (sum.tippingYear) {
       const bx = x(sum.tippingYear);
       svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
-      const lbl = sv('text', { x: bx + 5, y: pad.t - 10 }, { fill: 'var(--int)' });
-      lbl.textContent = 'bascule · an ' + sum.tippingYear;
+      const texte = 'bascule · an ' + sum.tippingYear;
+      const pos = labelRepere(texte, bx, pad.l, W - pad.r);
+      const lbl = sv('text', { x: pos.x, y: pad.t - 10, 'text-anchor': pos.anchor }, { fill: 'var(--int)' });
+      lbl.textContent = texte;
       svg.appendChild(lbl);
     }
 
@@ -1742,9 +1757,12 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     if (sum.tippingYear) {
       const bx = gx(sum.tippingYear - 1);
       svg.appendChild(sv('line', { x1: bx, x2: bx, y1: pad.t - 6, y2: y(0), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, { stroke: 'var(--int)' }));
-      const anchor = bx > pad.l + pw * 0.72 ? 'end' : 'start';
-      const lbl = sv('text', { x: bx + (anchor === 'end' ? -5 : 5), y: pad.t - 10, 'text-anchor': anchor }, { fill: 'var(--int)' });
-      lbl.textContent = 'les intérêts dépassent vos versements · an ' + sum.tippingYear;
+      // Phrase raccourcie sur un graphique étroit (téléphone) : en entier, elle
+      // est plus large que le cadre, quel que soit le côté où on la pose.
+      const texte = (pw < 340 ? 'intérêts > versements · an ' : 'les intérêts dépassent vos versements · an ') + sum.tippingYear;
+      const pos = labelRepere(texte, bx, pad.l, W - pad.r);
+      const lbl = sv('text', { x: pos.x, y: pad.t - 10, 'text-anchor': pos.anchor }, { fill: 'var(--int)' });
+      lbl.textContent = texte;
       svg.appendChild(lbl);
     }
 

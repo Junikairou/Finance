@@ -45,7 +45,10 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
   else wire();
 
-  if ('serviceWorker' in navigator) {
+  /* Dans l'APK (natif.js pose data-natif avant ce script), sw.js n'est pas
+     embarqué : Capacitor sert déjà l'appli hors-ligne, inutile de l'enregistrer
+     et une tentative ne ferait que 404 dans la console à chaque page. */
+  if ('serviceWorker' in navigator && !root.hasAttribute('data-natif')) {
     window.addEventListener('load', () => {
       const base = location.pathname.replace(/[^/]*$/, '');
       navigator.serviceWorker.register(base + 'sw.js').catch(() => { /* PWA indisponible */ });
