@@ -14,7 +14,8 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "@capacitor/cli": "^7.6.8"
+    "@capacitor/cli": "^7.6.8",
+    "yaml": "^2.9.0"
   },
   "dependencies": {
     "@capacitor/android": "^7.6.8",

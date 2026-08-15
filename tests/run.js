@@ -110,6 +110,34 @@ check('les balises XML sont équilibrées', () => {
   }
 });
 
+/* ---------- 1 bis. Workflows GitHub ---------- */
+
+console.log('\nWorkflows GitHub');
+
+const YAML = require('yaml');
+const workflows = fs.readdirSync(path.join(root, '.github/workflows')).filter((f) => f.endsWith('.yml'));
+
+check('les workflows sont du YAML valide', () => {
+  for (const f of workflows) {
+    const p = path.join(root, '.github/workflows', f);
+    try {
+      YAML.parse(fs.readFileSync(p, 'utf8'));
+    } catch (e) {
+      // Un workflow invalide échoue sur GitHub avant même de démarrer un job :
+      // aucun log, aucune ligne fautive. Le message du parseur, lui, en donne une.
+      throw new Error(`.github/workflows/${f} — ${e.message.split('\n')[0]}`);
+    }
+  }
+});
+
+check('le workflow APK publie la Release sous un tag fixe', () => {
+  const wf = YAML.parse(fs.readFileSync(path.join(root, '.github/workflows/apk.yml'), 'utf8'));
+  const etapes = wf.jobs.build.steps.map((s) => s.run || '').join('\n');
+  assert(wf.permissions && wf.permissions.contents === 'write', 'apk.yml : permissions.contents doit valoir write pour publier une Release');
+  assert(/gh release create apk\b/.test(etapes), 'apk.yml : la Release doit garder le tag « apk », sinon l\'adresse de téléchargement change à chaque version');
+  assert(etapes.includes('assembleDebug'), 'apk.yml : aucune compilation');
+});
+
 /* ---------- 2. Identité de l'application ---------- */
 
 console.log('\nIdentité de l\'application');

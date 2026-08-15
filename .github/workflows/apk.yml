@@ -85,15 +85,7 @@ jobs:
             echo "Version $VERSION, compilée le $(date -u '+%d/%m/%Y à %H:%M UTC')"
             echo "depuis ${GITHUB_REF_NAME} (${GITHUB_SHA::7})."
           } >> notes.md
-          cat >> notes.md <<'FIN'
-
-**Installation** : ouvrir cette page depuis le téléphone, télécharger
-`boule-de-neige.apk`, puis ouvrir le fichier téléchargé et autoriser
-l'installation depuis cette source.
-
-Build de débogage : elle remplace l'application déjà installée sans effacer
-ses données, et ne peut pas être publiée sur le Play Store.
-FIN
+          cat .github/notes-apk.md >> notes.md
           gh release delete apk --yes --cleanup-tag || true
           gh release create apk sortie/boule-de-neige.apk \
             --target "$GITHUB_SHA" \
