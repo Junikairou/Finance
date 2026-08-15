@@ -55,7 +55,8 @@ capital_fin = capital_début + épargne_annuelle + intérêts
 Capitalisation mensuelle — les intérêts du mois produisent dès le mois suivant :
 
 ```
-solde = solde × (1 + taux / 12) + versement_mensuel     (× 12 par an)
+m     = (1 + taux)^(1/12) − 1        (taux mensuel équivalent, convention Finary)
+solde = solde × (1 + m) + versement_mensuel     (× 12 par an)
 ```
 
 Frais, inflation, impôt :

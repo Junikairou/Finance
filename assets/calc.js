@@ -40,7 +40,9 @@
     const rate = gross - fees; // taux net de frais
     const years = Math.max(1, Math.round(p.years || 1));
     const yearly = monthly * 12;
-    const rMonth = rate / 12;
+    // Taux mensuel équivalent : composé 12 fois, il redonne exactement le taux
+    // annuel net (convention utilisée par Finary), et non taux/12 (taux nominal).
+    const rMonth = Math.pow(1 + rate, 1 / 12) - 1;
 
     const annual = [];
     const monthlyC = [];
@@ -136,7 +138,7 @@
       const need = target - initial * g;
       return Math.max(0, need / factor / 12);
     }
-    const m = rate / 12;
+    const m = Math.pow(1 + rate, 1 / 12) - 1;
     const n = years * 12;
     const g = Math.pow(1 + m, n);
     const factor = m === 0 ? n : (g - 1) / m; // valeur future de 1 €/mois

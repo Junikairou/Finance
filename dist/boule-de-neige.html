@@ -1041,7 +1041,7 @@ a:focus-visible, button:focus-visible, select:focus-visible {
   </section>
 
   <footer>
-    <p><strong>Comment c'est calculé.</strong> Capitalisation <em>annuelle</em>&nbsp;: <code>intérêts = capital début × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. Capitalisation <em>mensuelle</em>&nbsp;: <code>solde = solde × (1 + taux / 12) + versement</code>, douze fois par an. Les frais de gestion sont prélevés sur l'encours et ramènent le taux brut à un taux net. L'impôt est calculé à la sortie, sur les gains. <a href="comprendre.html">Le détail des formules</a>.</p>
+    <p><strong>Comment c'est calculé.</strong> Capitalisation <em>annuelle</em>&nbsp;: <code>intérêts = capital début × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. Capitalisation <em>mensuelle</em>&nbsp;: <code>solde = solde × (1 + m) + versement</code> douze fois par an, avec <code>m = (1 + taux)^(1/12) − 1</code> (le taux mensuel qui compose exactement au taux annuel — convention Finary). Les frais de gestion sont prélevés sur l'encours et ramènent le taux brut à un taux net. L'impôt est calculé à la sortie, sur les gains. <a href="comprendre.html">Le détail des formules</a>.</p>
     <p>Simulation à taux constant. Les rendements réels varient d'une année à l'autre, la fiscalité est simplifiée&nbsp;: ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat et ne constituent pas un conseil en investissement.</p>
   </footer>
 
@@ -1138,7 +1138,9 @@ a:focus-visible, button:focus-visible, select:focus-visible {
     const rate = gross - fees; // taux net de frais
     const years = Math.max(1, Math.round(p.years || 1));
     const yearly = monthly * 12;
-    const rMonth = rate / 12;
+    // Taux mensuel équivalent : composé 12 fois, il redonne exactement le taux
+    // annuel net (convention utilisée par Finary), et non taux/12 (taux nominal).
+    const rMonth = Math.pow(1 + rate, 1 / 12) - 1;
 
     const annual = [];
     const monthlyC = [];
@@ -1234,7 +1236,7 @@ a:focus-visible, button:focus-visible, select:focus-visible {
       const need = target - initial * g;
       return Math.max(0, need / factor / 12);
     }
-    const m = rate / 12;
+    const m = Math.pow(1 + rate, 1 / 12) - 1;
     const n = years * 12;
     const g = Math.pow(1 + m, n);
     const factor = m === 0 ? n : (g - 1) / m; // valeur future de 1 €/mois

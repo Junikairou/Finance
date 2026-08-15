@@ -54,12 +54,12 @@ capital fin d'année  = capital début + épargne de l'année + intérêts de l'
     <p>où <code>C₀</code> est le capital initial, <code>A</code> l'épargne annuelle, <code>r</code> le taux net et <code>N</code> le nombre d'années.</p>
 
     <h2>Capitalisation mensuelle</h2>
-    <p>Chaque mois, les intérêts s'ajoutent au solde et produisent à leur tour dès le mois suivant. Le versement est ajouté en fin de mois.</p>
-    <span class="formula">solde = solde × (1 + taux / 12) + versement mensuel     (répété 12 fois par an)</span>
-    <p>À taux affiché identique, capitaliser chaque mois rapporte davantage&nbsp;: les intérêts commencent à travailler onze mois plus tôt. Sur 100 € par mois à 8 % pendant 30 ans, l'écart atteint 13 096 €. Le mode <strong>Comparer</strong> du simulateur affiche les deux colonnes côte à côte.</p>
+    <p>Chaque mois, les intérêts s'ajoutent au solde et produisent à leur tour dès le mois suivant. Le versement est ajouté en fin de mois. Le taux mensuel <code>m</code> n'est pas le taux annuel divisé par 12&nbsp;: c'est le taux qui, composé douze fois, redonne exactement le taux annuel net (la convention utilisée par Finary et la plupart des simulateurs) — <code>m = (1 + r)^(1/12) − 1</code>. Diviser par 12 reviendrait à encaisser un taux réel légèrement supérieur au taux annoncé.</p>
+    <span class="formula">solde = solde × (1 + m) + versement mensuel     (répété 12 fois par an)</span>
+    <p>À taux affiché identique, capitaliser chaque mois rapporte tout de même davantage que l'annuel&nbsp;: les intérêts commencent à travailler onze mois plus tôt. Sur 100 € par mois à 8 % pendant 30 ans, l'écart atteint 4 915 €. Le mode <strong>Comparer</strong> du simulateur affiche les deux colonnes côte à côte.</p>
 
     <h2>Objectif inversé</h2>
-    <p>La formule fermée s'inverse. Pour atteindre un capital cible <code>T</code> en <code>n</code> mois avec un taux mensuel <code>m = r / 12</code>&nbsp;:</p>
+    <p>La formule fermée s'inverse. Pour atteindre un capital cible <code>T</code> en <code>n</code> mois avec le même taux mensuel <code>m = (1 + r)^(1/12) − 1</code>&nbsp;:</p>
     <span class="formula">versement mensuel = [ T − C₀ × (1 + m)^n ] × m / [ (1 + m)^n − 1 ]</span>
     <p>Si le résultat est négatif, votre capital initial atteint seul l'objectif&nbsp;: aucun versement n'est nécessaire.</p>
 

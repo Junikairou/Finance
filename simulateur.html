@@ -211,7 +211,7 @@
   </section>
 
   <footer>
-    <p><strong>Comment c'est calculé.</strong> Capitalisation <em>annuelle</em>&nbsp;: <code>intérêts = capital début × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. Capitalisation <em>mensuelle</em>&nbsp;: <code>solde = solde × (1 + taux / 12) + versement</code>, douze fois par an. Les frais de gestion sont prélevés sur l'encours et ramènent le taux brut à un taux net. L'impôt est calculé à la sortie, sur les gains. <a href="comprendre.html">Le détail des formules</a>.</p>
+    <p><strong>Comment c'est calculé.</strong> Capitalisation <em>annuelle</em>&nbsp;: <code>intérêts = capital début × taux</code>, puis <code>capital fin = capital début + épargne de l'année + intérêts</code>. Capitalisation <em>mensuelle</em>&nbsp;: <code>solde = solde × (1 + m) + versement</code> douze fois par an, avec <code>m = (1 + taux)^(1/12) − 1</code> (le taux mensuel qui compose exactement au taux annuel — convention Finary). Les frais de gestion sont prélevés sur l'encours et ramènent le taux brut à un taux net. L'impôt est calculé à la sortie, sur les gains. <a href="comprendre.html">Le détail des formules</a>.</p>
     <p>Simulation à taux constant. Les rendements réels varient d'une année à l'autre, la fiscalité est simplifiée&nbsp;: ces chiffres illustrent un mécanisme, ils ne prédisent pas un résultat et ne constituent pas un conseil en investissement.</p>
   </footer>
 
