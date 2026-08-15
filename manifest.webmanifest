@@ -7,8 +7,8 @@
   "id": "/Finance/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#12141a",
-  "theme_color": "#12141a",
+  "background_color": "#0a0b10",
+  "theme_color": "#0a0b10",
   "lang": "fr",
   "icons": [
     { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

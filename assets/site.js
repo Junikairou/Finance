@@ -21,7 +21,11 @@
   function wire() {
     const btn = document.getElementById('themeToggle');
     if (btn) {
-      const sync = () => { btn.textContent = current() === 'dark' ? 'Thème clair' : 'Thème sombre'; };
+      const sync = () => {
+        const dark = current() === 'dark';
+        btn.textContent = dark ? '☀' : '☾';
+        btn.setAttribute('aria-label', dark ? 'Passer au thème clair' : 'Passer au thème sombre');
+      };
       btn.addEventListener('click', () => {
         const next = current() === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
@@ -33,7 +37,7 @@
     }
 
     const here = location.pathname.split('/').pop() || 'index.html';
-    for (const a of document.querySelectorAll('.nav a')) {
+    for (const a of document.querySelectorAll('.nav a, .tabbar a')) {
       if ((a.getAttribute('href') || '').split('/').pop() === here) a.setAttribute('aria-current', 'page');
     }
   }

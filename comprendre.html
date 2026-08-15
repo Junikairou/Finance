@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comprendre les intérêts composés — Boule de neige</title>
 <meta name="description" content="Les formules exactes derrière l'effet boule de neige : capitalisation mensuelle et annuelle, frais de gestion, inflation, fiscalité, et ce que le simulateur ne dit pas.">
 <link rel="stylesheet" href="assets/styles.css">
@@ -10,7 +10,11 @@
 <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
 <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
-<meta name="theme-color" content="#12141a">
+<meta name="theme-color" content="#0a0b10">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Boule de neige">
 <script src="assets/site.js" defer></script>
 </head>
 <body>
@@ -121,5 +125,11 @@ capital fin d'année  = capital début + épargne de l'année + intérêts de l'
   </footer>
 
 </div>
+
+<nav class="tabbar" aria-label="Navigation principale">
+  <a href="index.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h5v-5.5h2V20h5v-9.5"/></svg><span>Accueil</span></a>
+  <a href="simulateur.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="4" x2="6" y2="20"/><circle cx="6" cy="9" r="2"/><line x1="12" y1="4" x2="12" y2="20"/><circle cx="12" cy="15" r="2"/><line x1="18" y1="4" x2="18" y2="20"/><circle cx="18" cy="7" r="2"/></svg><span>Simulateur</span></a>
+  <a href="comprendre.html"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5c2-1 5-1 8 1v13c-3-2-6-2-8-1v-13Z"/><path d="M20 5.5c-2-1-5-1-8 1v13c3-2 6-2 8-1v-13Z"/></svg><span>Comprendre</span></a>
+</nav>
 </body>
 </html>
