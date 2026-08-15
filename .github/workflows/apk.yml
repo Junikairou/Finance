@@ -2,7 +2,10 @@ name: APK
 
 on:
   push:
-    branches: [main]
+    # Les branches de travail compilent aussi : « Run workflow » n'est proposé
+    # que pour les workflows présents sur la branche par défaut, or l'APK doit
+    # pouvoir être essayé avant la fusion dans main.
+    branches: [main, 'claude/**']
   workflow_dispatch:
 
 # La publication de la Release écrit dans le dépôt.
