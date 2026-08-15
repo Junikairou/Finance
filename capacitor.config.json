@@ -1,0 +1,8 @@
+{
+  "appId": "com.junikairou.bouledeneige",
+  "appName": "Boule de neige",
+  "webDir": "www",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "auto"
+  }
+}

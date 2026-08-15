@@ -1,0 +1,24 @@
+{
+  "name": "boule-de-neige",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Un site statique en trois pages qui montre, année par année, ce que produit une épargne mensuelle régulière : les intérêts de l'année, le capital atteint et les intérêts composés cumulés depuis le départ — l'effet boule de neige.",
+  "scripts": {
+    "build": "node tools/build-www.js && node tools/build-artifact.js",
+    "sync": "node tools/build-www.js && cap sync android",
+    "test": "node tests/run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Junikairou/Finance.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.8"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.8",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/core": "^7.6.8"
+  }
+}

@@ -22,6 +22,19 @@ intégrés) :
 node tools/build-artifact.js   # → dist/boule-de-neige.html
 ```
 
+## Sur Android
+
+Le même site est empaqueté en application (Capacitor) : pages, CSS et JavaScript
+embarqués dans l'APK, donc utilisable sans réseau.
+
+**Télécharger depuis le téléphone** :
+[boule-de-neige.apk](https://github.com/Junikairou/Finance/releases/download/apk/boule-de-neige.apk)
+— l'adresse ne change pas d'une version à l'autre.
+
+Tout est dans **[ANDROID.md](ANDROID.md)** : installation, compilation
+(`.github/workflows/apk.yml`, sur GitHub, sans rien installer), et les pièges à
+connaître.
+
 ## Publication
 
 `.github/workflows/pages.yml` déploie le site sur GitHub Pages à chaque push sur
@@ -86,7 +99,11 @@ assets/styles.css          thème clair et sombre, mise en page
 assets/site.js             navigation et bascule de thème, communes aux pages
 assets/calc.js             moteur de calcul (utilisable aussi sous Node)
 assets/app.js              simulateur : interface, graphiques SVG, tableau
+assets/natif.js            application Android seulement : bouton retour
 tools/build-artifact.js    génère la page autonome dans dist/
+tools/build-www.js         prépare www/, le contenu embarqué dans l'APK
+tests/run.js               npm test : ressources Android, www/, calculs
+android/                   projet Android (Capacitor) — voir ANDROID.md
 ```
 
 `assets/calc.js` s'utilise seul :

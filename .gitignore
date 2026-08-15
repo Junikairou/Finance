@@ -1,0 +1,6 @@
+node_modules/
+www/
+*.apk
+
+# Le projet Android a son propre .gitignore (android/.gitignore) : il couvre
+# les sorties de Gradle et tout ce que « cap sync » régénère.
