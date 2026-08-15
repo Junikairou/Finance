@@ -7,6 +7,30 @@
    en bas sur mobile, comme une app installée.
    ------------------------------------------------------------------ */
 
+/* Pretendard — remplace le grotesque + la chasse fixe par une seule famille
+   sans-serif propre, celle que beaucoup d'apps coréennes (dont le client de
+   League of Legends) utilisent à la place d'Apple SD Gothic Neo sur les
+   plateformes qui ne l'ont pas nativement. Sous licence SIL OFL, deux graisses
+   seulement (texte + titres) pour rester léger — voir assets/fonts/. */
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/pretendard-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/pretendard-semibold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/pretendard-bold.woff2") format("woff2");
+}
+
 :root {
   color-scheme: light;
 
@@ -31,8 +55,8 @@
   --int-ghost: rgba(192, 127, 16, 0.13);
   --accent: #3f6da8;
 
-  --font-display: "Helvetica Neue", Helvetica, "Arial Nova", Arial, sans-serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-body: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
   --r: 14px;
@@ -187,7 +211,7 @@ body {
 }
 
 .nav a {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -260,7 +284,7 @@ body {
 .tabbar svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
 
 .tabbar span {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   letter-spacing: 0.03em;
 }
@@ -319,7 +343,7 @@ body {
 .field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 
 .field > label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10.5px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -346,7 +370,7 @@ body {
   border: 0;
   background: transparent;
   color: var(--ink);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 16.5px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
@@ -359,7 +383,7 @@ body {
 .input-shell input[type="number"] { -moz-appearance: textfield; }
 
 .unit {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12.5px;
   color: var(--muted);
   padding-left: 8px;
@@ -367,7 +391,7 @@ body {
 }
 
 .hint {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11.5px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -387,7 +411,7 @@ body {
   border-radius: var(--r-pill);
   background: transparent;
   color: var(--muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -425,7 +449,7 @@ body {
 }
 
 .tile .k {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -445,7 +469,7 @@ body {
 }
 
 .tile .s {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -493,7 +517,7 @@ body {
 }
 
 .readout strong { color: var(--ink); font-weight: 600; }
-.readout .mark { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.readout .mark { font-family: var(--font-body); font-variant-numeric: tabular-nums; }
 
 /* ---------- graphiques ---------- */
 
@@ -502,7 +526,7 @@ body {
   gap: 16px;
   flex-wrap: wrap;
   align-items: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11.5px;
   color: var(--ink-2);
   padding: 0 var(--pad);
@@ -520,7 +544,7 @@ body {
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
 
 .chart text {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
   fill: var(--muted);
   font-size: 10.5px;
@@ -540,7 +564,7 @@ body {
   border-radius: var(--r);
   box-shadow: var(--shadow-pop);
   padding: 10px 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
   color: var(--ink-2);
@@ -599,7 +623,7 @@ body {
 }
 
 .ledger-year {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -619,7 +643,7 @@ body {
 }
 
 .ledger-cap {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 9.5px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -640,7 +664,7 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 6px 14px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
   color: var(--ink-2);
@@ -649,7 +673,7 @@ body {
 .ledger-line b { color: var(--ink); font-weight: 600; }
 
 .ledger-foot {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
@@ -692,7 +716,7 @@ body {
 }
 
 .ledger-col-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -700,7 +724,7 @@ body {
 }
 
 .ledger-range {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
   color: var(--ink-2);
@@ -718,7 +742,7 @@ footer {
 }
 
 footer code {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--ink-2);
 }
@@ -744,7 +768,7 @@ footer code {
 }
 
 .eyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -781,7 +805,7 @@ footer code {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -799,7 +823,7 @@ footer code {
 .btn:hover { border-color: var(--rule-strong); }
 
 .figure-note {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--muted);
   margin: 10px 2px 0;
@@ -895,7 +919,7 @@ footer code {
   box-shadow: var(--shadow-card);
 }
 .dl dt {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 12px;
   letter-spacing: 0.04em;
   color: var(--ink);
@@ -913,7 +937,7 @@ footer code {
 .panel-body-alt { background: transparent; }
 
 .section-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -927,7 +951,7 @@ footer code {
   border: 0;
   background: transparent;
   color: var(--ink);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 13.5px;
   padding: 13px 0;
   outline: none;

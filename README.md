@@ -109,11 +109,22 @@ assets/site.js             navigation et bascule de thème, communes aux pages
 assets/calc.js             moteur de calcul (utilisable aussi sous Node)
 assets/app.js              simulateur : interface, graphiques SVG, tableau
 assets/natif.js            application Android seulement : bouton retour
+assets/fonts/               Pretendard (SIL OFL) — voir plus bas
 tools/build-artifact.js    génère la page autonome dans dist/
 tools/build-www.js         prépare www/, le contenu embarqué dans l'APK
 tests/run.js               npm test : ressources Android, www/, calculs
 android/                   projet Android (Capacitor) — voir ANDROID.md
 ```
+
+## Typographie
+
+Une seule famille, [Pretendard](https://github.com/orioncactus/pretendard)
+(SIL OFL, `assets/fonts/`), embarquée en deux graisses (texte, titres). C'est
+l'alternative ouverte et multiplateforme à Apple SD Gothic Neo — le sans-serif
+que beaucoup d'apps coréennes (dont le client League of Legends) utilisent à
+la place de San Francisco/Segoe UI sur les systèmes qui ne les ont pas
+nativement. Ne sert que pour l'interface&nbsp;; `assets/styles.css` garde une
+police à chasse fixe (`--font-mono`) pour les formules de `comprendre.html`.
 
 `assets/calc.js` s'utilise seul :
 

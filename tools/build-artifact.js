@@ -25,10 +25,21 @@ const body = html
 const title = (html.match(/<title>([^<]*)<\/title>/) || [, 'Boule de neige'])[1];
 const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [, ''])[1];
 
+// Un fichier unique, sans dossier assets/ à côté : les polices se @font-face
+// avec un chemin relatif dans styles.css, remplacé ici par leur contenu en
+// base64 pour que la page reste ouvrable seule, hors ligne.
+const css = read('assets/styles.css').replace(
+  /url\("fonts\/([\w-]+\.woff2)"\)/g,
+  (m, file) => {
+    const data = fs.readFileSync(path.join(root, 'assets/fonts', file)).toString('base64');
+    return `url("data:font/woff2;base64,${data}")`;
+  }
+);
+
 const out = `<title>${title.replace('Simulateur — ', '')}</title>
 <meta name="description" content="${desc}">
 <style>
-${read('assets/styles.css')}
+${css}
 </style>
 
 ${body}

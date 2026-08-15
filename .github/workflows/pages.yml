@@ -28,9 +28,11 @@ jobs:
       # les outils et les tests, qui n'ont rien à faire en ligne.
       - name: Rassembler le site
         run: |
-          mkdir -p _site/assets _site/dist
-          cp index.html simulateur.html comprendre.html .nojekyll _site/
+          mkdir -p _site/assets/icons _site/assets/fonts _site/dist
+          cp index.html simulateur.html comprendre.html manifest.webmanifest sw.js .nojekyll _site/
           cp assets/styles.css assets/site.js assets/calc.js assets/app.js assets/favicon.svg _site/assets/
+          cp assets/icons/*.png _site/assets/icons/
+          cp assets/fonts/*.woff2 _site/assets/fonts/
           cp dist/boule-de-neige.html _site/dist/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

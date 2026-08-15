@@ -127,9 +127,9 @@
     syncSegmented('unitsGroup', 'units', units);
     $('envelope').value = envelope;
 
-    $('modeHint').textContent = mode === 'monthly' ? 'Intérêts calculés chaque mois'
-      : mode === 'annual' ? 'Intérêts calculés une fois par an'
-        : 'Les deux méthodes côte à côte';
+    $('modeHint').textContent = mode === 'monthly' ? 'Versement en fin de chaque mois, intérêts recalculés dans la foulée'
+      : mode === 'annual' ? 'Versement et intérêts ajoutés une seule fois, en fin d\'année'
+        : 'Les deux méthodes, avec le même versement annuel';
     $('unitsHint').textContent = units === 'real'
       ? 'Corrigés de l\'inflation' : 'Sans correction de l\'inflation';
 
@@ -487,7 +487,7 @@
     const c = (v, d) => eur0.format(conv(v, d));
 
     if (mode === 'compare') {
-      $('tableNote').textContent = 'Les deux méthodes, ligne à ligne. Chacune part du même capital de début d\'année ; seule la fréquence à laquelle les intérêts s\'ajoutent au solde change.' + unitNote;
+      $('tableNote').textContent = 'Pourquoi la mensuelle rapporte plus : en annuel, l\'épargne de toute l\'année compte comme un seul dépôt en fin d\'année — elle ne produit donc aucun intérêt cette année-là. En mensuel, chaque versement de fin de mois commence à produire des intérêts dès le mois suivant. Même effort, même taux : la mensuelle a simplement plus de temps pour composer.' + unitNote;
       $('tbody').innerHTML = result.annual.map((a, i) => {
         const m = result.monthlyC[i];
         const ecart = m.close - a.close;
@@ -512,8 +512,8 @@
     }
 
     $('tableNote').textContent = (mode === 'monthly'
-      ? 'Capitalisation mensuelle : chaque ligne montre le capital de début et de fin d\'année ; entre les deux, les intérêts du mois s\'ajoutent au solde et produisent à leur tour dès le mois suivant.'
-      : 'Capitalisation annuelle : les intérêts de l\'année portent sur le capital de début d\'année ; le versement et les intérêts s\'ajoutent une seule fois, en fin d\'année.') + unitNote;
+      ? 'Chaque ligne montre le capital de début et de fin d\'année. Entre les deux, le versement du mois est ajouté fin de mois, et les intérêts du mois — calculés sur ce qu\'il y avait déjà, avant ce versement — s\'ajoutent aussitôt et se remettent eux-mêmes à produire des intérêts dès le mois suivant.'
+      : 'Le modèle simplifie : toute l\'épargne de l\'année (versée mois après mois dans la vraie vie) compte comme un seul dépôt en fin d\'année. Les intérêts de l\'année ne portent donc que sur le capital déjà là au 1er janvier — vos versements de l\'année ne commencent à produire des intérêts qu\'à partir de l\'année suivante.') + unitNote;
 
     $('tbody').innerHTML = rows.map((r) => `<div class="ledger-row ${rowClass(r.year)}">
         <div class="ledger-top">
