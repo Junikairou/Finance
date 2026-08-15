@@ -70,3 +70,16 @@ l'application en arrière-plan au lieu de la fermer.
   Android 6 et 7, c'est encore l'icône par défaut de Capacitor, faute de PNG dédiés.
 - **Play Store** : impossible avec cette build, qui est une build de débogage. Une
   publication demanderait une clé de signature personnelle et un compte développeur.
+- **Workflow YAML** : un workflow mal formé échoue **avant** de démarrer le moindre job,
+  sans un seul log — deux compilations perdues ainsi. `npm test` relit les deux workflows
+  avec un vrai parseur et donne la ligne fautive.
+- **`keytool` n'écrit pas la même chose selon la source** : « SHA256: » pour un APK,
+  « (SHA-256): » pour un magasin de clés. La vérification ne compare que les 32 octets.
+
+## Vérifier l'affichage sans téléphone
+
+`tools/verif-mobile.mjs` ouvre les trois pages dans Chromium à 393 × 873, avec Capacitor
+simulé, vérifie que `natif.js` se branche, que le bouton retour recule puis met
+l'application en arrière-plan, qu'aucune page ne déborde horizontalement, et écrit des
+captures dans `/tmp/verif-mobile/`. Playwright n'est pas une dépendance du projet
+(l'installer, l'utiliser, le retirer — le mode d'emploi est en tête du fichier).

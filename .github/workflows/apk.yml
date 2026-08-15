@@ -6,6 +6,8 @@ on:
     # que pour les workflows présents sur la branche par défaut, or l'APK doit
     # pouvoir être essayé avant la fusion dans main.
     branches: [main, 'claude/**']
+    # Un commit qui ne touche qu'à la documentation ne change pas l'APK.
+    paths-ignore: ['**.md']
   workflow_dispatch:
 
 # La publication de la Release écrit dans le dépôt.
