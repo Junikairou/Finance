@@ -1,0 +1,19 @@
+{
+  "name": "Boule de neige — Simulateur d'intérêts composés",
+  "short_name": "Boule de neige",
+  "description": "Simulez l'effet boule de neige des intérêts composés : versements, frais, inflation et fiscalité.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/Finance/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#12141a",
+  "theme_color": "#12141a",
+  "lang": "fr",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

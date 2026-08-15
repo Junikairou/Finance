@@ -28,6 +28,23 @@ node tools/build-artifact.js   # → dist/boule-de-neige.html
 `main`. Il faut l'activer une fois : **Settings → Pages → Source : GitHub
 Actions**.
 
+## Installer comme application (PWA) et obtenir un APK
+
+Le site est une PWA installable (`manifest.webmanifest` + `sw.js`) : une fois
+publié sur GitHub Pages, Chrome sur Android propose « Installer l'application »
+— icône sur l'écran d'accueil, plein écran, fonctionne hors-ligne.
+
+Pour un fichier `.apk` réel (installable sans passer par Chrome) :
+
+1. Publiez le site (voir *Publication* ci-dessus) — url du type
+   `https://<compte>.github.io/Finance/`.
+2. Allez sur [pwabuilder.com](https://www.pwabuilder.com), collez cette URL,
+   cliquez **Package for stores → Android**. PWABuilder lit le manifest et
+   génère un APK signé (Trusted Web Activity) prêt à installer.
+
+Aucun outil Android (SDK, Bubblewrap) n'est nécessaire côté dépôt ; le site
+n'embarque que le manifest et le service worker qui rendent ça possible.
+
 ## Ce que fait le simulateur
 
 - **Deux points de départ** : « je verse tant par mois », ou « je vise un
